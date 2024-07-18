@@ -1,0 +1,57 @@
+automation:
+  - id: automation.ambientika_authenticate
+    alias: Ambientika Authenticate
+    description: ""
+    mode: single
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: numeric_state
+        entity_id:
+          - sensor.ambientika_token_remaining_days
+        below: 5
+    condition: []
+    action:
+      - service: rest_command.ambientika_authenticate
+        metadata: {}
+        data:
+          username: !secret ambientika_username
+          password: !secret ambientika_password
+        response_variable: response
+      - service: input_text.set_value
+        metadata: {}
+        data:
+          value: "{{ response.content.jwtToken }}"
+        target:
+          entity_id: input_text.ambientika_access_token
+      - service: homeassistant.update_entity
+        target:
+          entity_id: sensor.ambientika_token_remaining_days
+
+  - id: automation.ambientika_change_mode
+    alias: Ambientika 1 Change-Mode
+    description: ""
+    mode: single
+    trigger:
+      - platform: state
+        entity_id:
+          - input_select.ambientika_1_mode
+          - input_number.ambientika_1_fanspeed
+          - input_number.ambientika_1_humiditylevel
+    condition: []
+    action:
+      - service: rest_command.ambientika_change_mode
+        data:
+          serial: !secret serial_device-1
+          mode: '"{{ states("input_select.ambientika_1_mode") }}"'
+          fan: "{{ states('input_number.ambientika_1_fanSpeed')|int - 1 }}"
+          humidity: "{{ states('input_number.ambientika_1_humidityLevel')|int - 1 }}"
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 2
+          milliseconds: 0
+      - service: homeassistant.update_entity
+        data: {}
+        target:
+          entity_id: sensor.ambientika_1_operating_mode

@@ -1,0 +1,72 @@
+# Simple/Basic example
+type: vertical-stack
+title: Wohnraumlüftung
+cards:
+  - type: horizontal-stack
+    cards:
+      - type: markdown
+        content: >-
+          {%- set OperatingMode = states('sensor.ambientika_1_operating_mode')
+          -%}
+
+
+          <center>  
+            {%- if OperatingMode in ['Smart', 'Auto', 'Night', 'AwayHome', 'ManualHeatRecovery'] -%}
+            <img src="/local/ambientika_smart/Casetta_completa.svg" width=90% />
+            {%- elif OperatingMode in ['Expulsion'] -%}
+            <img src="/local/ambientika_smart/Casetta_espulsione.svg" width=90% />
+            {%- elif OperatingMode in ['MasterSlaveFlow'] -%}
+            <img src="/local/ambientika_smart/Casetta_flusso_master_slave.svg" width=90% />
+            {%- elif OperatingMode in ['SlaveMasterFlow'] -%}
+            <img src="/local/ambientika_smart/Casetta_flusso_slave_master.svg" width=90% />
+            {%- elif OperatingMode in ['Intake'] -%}
+            <img src="/local/ambientika_smart/Casetta_immissione.svg" width=90% />
+            {%- elif OperatingMode in ['TimedExpulsion'] -%}
+            <img src="/local/ambientika_smart/Casetta_orologio.svg" width=90% />
+            {%- elif OperatingMode in ['Surveillance', 'Off'] -%}
+            <img src="/local/ambientika_smart/Casetta_vuota.svg" width=90% />
+            {%- endif -%}
+            
+            <b> {{ OperatingMode }} </b>
+          </center>
+      - type: vertical-stack
+        cards:
+          - type: tile
+            entity: sensor.ambientika_1_temperature_filtered
+            name: Temperatur
+            hide_state: false
+            vertical: false
+            show_entity_picture: false
+          - type: tile
+            entity: sensor.ambientika_1_humidity_filtered
+            name: Luftfeuchtigkeit
+          - type: tile
+            entity: sensor.ambientika_1_filter_status
+            name: Filterstatus
+  - type: entities
+    entities:
+      - entity: switch.ambientika_1
+        name: Ambientika Kinderzimmer
+      - entity: input_select.ambientika_1_mode
+        name: Modus
+      - type: conditional
+        conditions:
+          - entity: input_select.ambientika_1_mode
+            state: ManualHeatRecovery
+        row:
+          entity: input_number.ambientika_1_fanspeed
+          name: Lüfter
+      - type: conditional
+        conditions:
+          - entity: input_select.ambientika_1_mode
+            state: Auto
+        row:
+          entity: input_number.ambientika_1_humiditylevel
+          name: Luftfeuchtigkeit
+      - type: conditional
+        conditions:
+          - entity: input_select.ambientika_1_mode
+            state: Surveillance
+        row:
+          entity: input_number.ambientika_1_humiditylevel
+          name: Luftfeuchtigkeit

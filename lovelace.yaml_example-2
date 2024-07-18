@@ -1,0 +1,79 @@
+# Simple/Basic example with history lines
+type: vertical-stack
+title: Wohnraumlüftung
+cards:
+  - type: horizontal-stack
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: |-
+              <center> <font color=#676766>  
+                {%- set OperatingMode = states('sensor.ambientika_1_operating_mode') -%}
+                <b> {{ OperatingMode }} </b>
+                
+                {%- if OperatingMode in ['Smart', 'Auto', 'Night', 'AwayHome', 'ManualHeatRecovery'] -%}
+                <img src="/local/ambientika_smart/Casetta_completa.svg" width=90% />
+                {%- elif OperatingMode in ['Expulsion'] -%}
+                <img src="/local/ambientika_smart/Casetta_espulsione.svg" width=90% />
+                {%- elif OperatingMode in ['MasterSlaveFlow'] -%}
+                <img src="/local/ambientika_smart/Casetta_flusso_master_slave.svg" width=90% />
+                {%- elif OperatingMode in ['SlaveMasterFlow'] -%}
+                <img src="/local/ambientika_smart/Casetta_flusso_slave_master.svg" width=90% />
+                {%- elif OperatingMode in ['Intake'] -%}
+                <img src="/local/ambientika_smart/Casetta_immissione.svg" width=90% />
+                {%- elif OperatingMode in ['TimedExpulsion'] -%}
+                <img src="/local/ambientika_smart/Casetta_orologio.svg" width=90% />
+                {%- elif OperatingMode in ['Surveillance', 'Off'] -%}
+                <img src="/local/ambientika_smart/Casetta_vuota.svg" width=90% />
+                {%- endif -%}
+                
+                {%- set fan_speed = states('sensor.ambientika_1_fan_speed') -%}
+                {%- set fan_speed_icon = state_attr('sensor.ambientika_1_fan_speed', 'icon') -%}
+                {%- set humid_level = states('sensor.ambientika_1_humidity_level') -%}
+                {%- set humid_level_icon = state_attr('sensor.ambientika_1_humidity_level', 'icon') -%}
+                {%- if OperatingMode in ['Auto', 'Survillance'] -%}
+                Ziel: <ha-icon icon='{{humid_level_icon}}'></ha-icon> {{humid_level}}
+                {%- elif OperatingMode in ['ManualHeatRecovery'] -%}
+                <ha-icon icon='{{fan_speed_icon}}'></ha-icon> {{fan_speed}}
+                {%- endif -%}
+              </center> </font>
+      - type: vertical-stack
+        cards:
+          - graph: line
+            type: sensor
+            entity: sensor.ambientika_1_temperature_filtered
+            name: Temperatur
+            detail: 1
+          - graph: line
+            type: sensor
+            entity: sensor.ambientika_1_humidity_filtered
+            name: Luftfeuchtigkeit
+            detail: 1
+  - type: entities
+    entities:
+      - entity: switch.ambientika_1
+        name: Ambientika Kinderzimmer
+      - entity: input_select.ambientika_1_mode
+        name: Modus
+      - type: conditional
+        conditions:
+          - entity: input_select.ambientika_1_mode
+            state: ManualHeatRecovery
+        row:
+          entity: input_number.ambientika_1_fanspeed
+          name: Lüfter
+      - type: conditional
+        conditions:
+          - entity: input_select.ambientika_1_mode
+            state: Auto
+        row:
+          entity: input_number.ambientika_1_humiditylevel
+          name: Luftfeuchtigkeit
+      - type: conditional
+        conditions:
+          - entity: input_select.ambientika_1_mode
+            state: Surveillance
+        row:
+          entity: input_number.ambientika_1_humiditylevel
+          name: Luftfeuchtigkeit

@@ -1,0 +1,34 @@
+switch:
+  - platform: template
+    switches:
+      ambientika_1:
+        friendly_name: Ambientika 1
+        unique_id: ambientika_1
+        icon_template: >
+          {% if is_state('sensor.ambientika_1_operating_mode', 'Off') %} mdi:hvac-off
+          {% else %} mdi:hvac {% endif %}
+        value_template: "{{ not is_state('sensor.ambientika_1_operating_mode', 'Off') }}"
+        turn_on:
+          - service: rest_command.ambientika_change_mode
+            data:
+              serial: !secret serial_device-1
+              mode: '"{{ states("input_select.ambientika_1_mode") }}"'
+              fan: "{{ states('input_number.ambientika_1_fanSpeed')|int - 1 }}"
+              humidity: "{{ states('input_number.ambientika_1_humidityLevel')|int - 1 }}"
+          - delay: "00:00:02"
+          - service: homeassistant.update_entity
+            target:
+              entity_id: sensor.ambientika_1_operating_mode
+            data: {}
+        turn_off:
+          - service: rest_command.ambientika_change_mode
+            data:
+              serial: !secret serial_device-1
+              mode: '"Off"'
+              fan: "{{ states('input_number.ambientika_1_fanSpeed')|int - 1 }}"
+              humidity: "{{ states('input_number.ambientika_1_humidityLevel')|int - 1 }}"
+          - delay: "00:00:02"
+          - service: homeassistant.update_entity
+            target:
+              entity_id: sensor.ambientika_1_operating_mode
+            data: {}

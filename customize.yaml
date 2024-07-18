@@ -1,0 +1,11 @@
+homeassistant:
+  customize:
+    automation.ambientika_authenticate:
+      icon: mdi:key-chain
+    automation.ambientika_1_change_mode:
+      icon: mdi:hvac
+
+recorder:
+  exclude:
+    entities:
+      - input_text.ambientika_access_token

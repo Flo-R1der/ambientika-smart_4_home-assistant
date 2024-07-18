@@ -1,0 +1,18 @@
+rest_command:
+  ambientika_authenticate:
+    url: "https://app.ambientika.eu:4521/users/authenticate"
+    method: POST
+    headers:
+      accept: "application/json"
+    payload: '{"username":"{{ username }}","password":"{{ password }}"}'
+    content_type: "application/json"
+
+  ambientika_change_mode:
+    url: "https://app.ambientika.eu:4521/device/change-mode"
+    method: POST
+    headers:
+      accept: "application/json"
+      Authorization: >
+        Bearer {{ states("input_text.ambientika_access_token") }}
+    payload: '{"deviceSerialNumber":"{{ serial }}","operatingMode":{{ mode }},"fanSpeed":{{ fan }},"humidityLevel":{{ humidity }}}'
+    content_type: "application/json"
