@@ -115,7 +115,7 @@ Please note that the SVG images included in this package are originally from the
 | ![](images/lovelace_example-1.png) | [lovelace.yaml_example-1](lovelace.yaml_example-1) |
 | ![](images/lovelace_example-2.png) | [lovelace.yaml_example-2](lovelace.yaml_example-2) |
 | ![](images/lovelace_example-3.png) | [lovelace.yaml_example-3](lovelace.yaml_example-3) * |
-* NOTE: This approach takes advantage of the [Mushroom Template Card](https://github.com/piitaya/lovelace-mushroom/blob/main/docs/cards/template.md). In order to use it you might install the Mushroom cards. I would recommend to use [HACS](https://hacs.xyz/) to install them.
+\* NOTE: This approach takes advantage of the [Mushroom Template Card](https://github.com/piitaya/lovelace-mushroom/blob/main/docs/cards/template.md). In order to use it you might install the Mushroom cards. I would recommend to use [HACS](https://hacs.xyz/) to install them.
 
 
 
