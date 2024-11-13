@@ -100,6 +100,22 @@ The idea here is: I would use numbering for entity names and IDs to reduce the a
    - ``name``: Ambientika 1 Temperature (filtered)  
 
 
+### 7. Duplicate to "Ambientika 2" if you have multiple Master-devices
+The Feedback and my newer experience on master-slave logic is positive. In case you have multiple devices set as **Master** you need to copy all the yaml-code assigned with id/name "Ambientika 1" and duplicat it to "Ambientika 2" for example. On Windows machines you might use `CTRL + H` to start the mass replacement and:
+- find: ``_1`` (most entities) / ``-1`` (secrets) *
+- replace: ``_2`` / ``-2``
+
+> \* don't use only `1` as it will also change values for fan speed or port-number for the REST-API which will break your package!
+
+This needs to be done for:
+- ``automation.yaml``
+- ``customize.yaml``
+- ``helpers.yaml``
+- ``secrets.yaml``
+- ``sensors.yaml``
+- ``switch.yaml``
+
+-----
 
 ## User Interface
 I have also created some UI examples, which are provided in the table below.  
@@ -120,6 +136,7 @@ Please note that the SVG images included in this package are originally from the
 
 
 ## Open Topics
-- As of today (2024-05-08) the Package is only tested with a single device. It is intended to push the package forward to also support multiple devices with master-slave logic.
+- As of today (2024-11-13) the Package is tested with two devices in master-slave logic. It is working fine, but can only controll the master. However, retreiving sensor values from a slave is not tested untill now.
+- Copying the code to another Master like described in [No. 7](#7-duplicate-to-ambientika-2-if-you-have-multiple-master-devices) is also untested. If you find any issues, please let me know so that this can be fixed!
 - I am not able to provide a custom integration. If you are a developer and have the time and knowledge to do so, feel free to take my "code" or send me a message so that we can push this package forward to a more user-friendly integration.
 - A [Template-Fan](https://www.home-assistant.io/integrations/fan.template/) may be a thing. But I'm not sure, if this makes any sense with this device.
