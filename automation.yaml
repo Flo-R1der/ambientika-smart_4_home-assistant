@@ -42,6 +42,8 @@ automation:
       - platform: state
         entity_id:
           - sensor.ambientika_1_operating_mode
+          - sensor.ambientika_1_fan_speed
+          - sensor.ambientika_1_humidity_level
         id: mode_changed
     condition:
       - condition: template
@@ -75,10 +77,35 @@ automation:
                   - mode_changed
               - condition: template
                 value_template:
-                  "{{ states('sensor.ambientika_1_operating_mode') not in ['unavailable', 'unknown'] }}"
+                  "{{ states('sensor.ambientika_1_operating_mode') not in ['unavailable', 'unknown'] and
+                  states('sensor.ambientika_1_fan_speed') not in ['unavailable', 'unknown'] and
+                  states('sensor.ambientika_1_humidity_level') not in ['unavailable', 'unknown'] }}"
             sequence:
               - action: input_select.select_option
                 target:
                   entity_id: input_select.ambientika_1_mode
                 data:
                   option: "{{ states('sensor.ambientika_1_operating_mode') }}"
+              - variables:
+                  fanspeed:
+                    "{% if states('sensor.ambientika_1_fan_speed') == 'Low' %} 1
+                    {% elif states('sensor.ambientika_1_fan_speed') == 'Medium' %} 2
+                    {% elif states('sensor.ambientika_1_fan_speed') == 'High' %} 3
+                    {% else %} {{ states('input_number.ambientika_1_fanspeed') }}
+                    {% endif %}"
+                  humiditylevel:
+                    "{% if states('sensor.ambientika_1_humidity_level') == 'Dry' %} 1
+                    {% elif states('sensor.ambientika_1_humidity_level') == 'Normal' %} 2
+                    {% elif states('sensor.ambientika_1_humidity_level') == 'Moist' %} 3
+                    {% else %} {{ states('input_number.ambientika_1_humiditylevel') }}
+                    {% endif %}"
+              - action: input_number.set_value
+                target:
+                  entity_id: input_number.ambientika_1_fanspeed
+                data:
+                  value: "{{ fanspeed|float }}"
+              - action: input_number.set_value
+                target:
+                  entity_id: input_number.ambientika_1_humiditylevel
+                data:
+                  value: "{{ humiditylevel|float }}"
