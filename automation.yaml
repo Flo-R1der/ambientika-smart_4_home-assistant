@@ -28,7 +28,7 @@ automation:
         target:
           entity_id: sensor.ambientika_token_remaining_days
 
-  - id: automation.ambientika_change_mode
+  - id: automation.ambientika_1_change_mode
     alias: Ambientika 1 Change-Mode
     description: ""
     mode: single
@@ -38,20 +38,44 @@ automation:
           - input_select.ambientika_1_mode
           - input_number.ambientika_1_fanspeed
           - input_number.ambientika_1_humiditylevel
+        id: change_mode
+      - platform: state
+        entity_id:
+          - sensor.ambientika_1_operating_mode
+        id: mode_changed
     condition: []
     action:
-      - service: rest_command.ambientika_change_mode
-        data:
-          serial: !secret serial_device-1
-          mode: '"{{ states("input_select.ambientika_1_mode") }}"'
-          fan: "{{ states('input_number.ambientika_1_fanSpeed')|int - 1 }}"
-          humidity: "{{ states('input_number.ambientika_1_humidityLevel')|int - 1 }}"
-      - delay:
-          hours: 0
-          minutes: 0
-          seconds: 2
-          milliseconds: 0
-      - service: homeassistant.update_entity
-        data: {}
-        target:
-          entity_id: sensor.ambientika_1_operating_mode
+      - choose:
+          - conditions:
+              - condition: trigger
+                id:
+                  - change_mode
+            sequence:
+              - service: rest_command.ambientika_change_mode
+                data:
+                  serial: !secret serial_device-1
+                  mode: '"{{ states("input_select.ambientika_1_mode") }}"'
+                  fan: "{{ states('input_number.ambientika_1_fanSpeed')|int - 1 }}"
+                  humidity: "{{ states('input_number.ambientika_1_humidityLevel')|int - 1 }}"
+              - delay:
+                  hours: 0
+                  minutes: 0
+                  seconds: 2
+                  milliseconds: 0
+              - service: homeassistant.update_entity
+                data: {}
+                target:
+                  entity_id: sensor.ambientika_1_operating_mode
+          - conditions:
+              - condition: trigger
+                id:
+                  - mode_changed
+              - condition: template
+                value_template:
+                  "{{ states('sensor.ambientika_1_operating_mode') not in ['unavailable', 'unknown'] }}"
+            sequence:
+              - action: input_select.select_option
+                target:
+                  entity_id: input_select.ambientika_1_mode
+                data:
+                  option: "{{ states('sensor.ambientika_1_operating_mode') }}"
