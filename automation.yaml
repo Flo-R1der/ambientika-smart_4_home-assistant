@@ -43,7 +43,10 @@ automation:
         entity_id:
           - sensor.ambientika_1_operating_mode
         id: mode_changed
-    condition: []
+    condition:
+      - condition: template
+        value_template: >-
+          {{ now() > as_datetime(this.attributes.last_triggered, today_at("00:00")) + timedelta(seconds=2) }}
     action:
       - choose:
           - conditions:
@@ -60,7 +63,7 @@ automation:
               - delay:
                   hours: 0
                   minutes: 0
-                  seconds: 2
+                  seconds: 3
                   milliseconds: 0
               - service: homeassistant.update_entity
                 data: {}
