@@ -4,6 +4,8 @@ homeassistant:
       icon: mdi:key-chain
     automation.ambientika_1_change_mode:
       icon: mdi:hvac
+    automation.ambientika_1_filter_notification:
+      icon: mdi:air-filter
 
 recorder:
   exclude:

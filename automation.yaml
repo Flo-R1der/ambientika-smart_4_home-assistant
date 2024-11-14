@@ -109,3 +109,39 @@ automation:
                   entity_id: input_number.ambientika_1_humiditylevel
                 data:
                   value: "{{ humiditylevel|float }}"
+
+  - id: automation.ambientika_1_filter_notification
+    alias: Ambientika 1 Filter Notification
+    description: ""
+    mode: single
+    trigger:
+      - platform: state
+        entity_id:
+          - sensor.ambientika_1_filter_status
+        to: Bad
+        id: bad_filter
+    condition: []
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id:
+                  - bad_filter
+            sequence:
+              - variables:
+                  area: "{{ area_name(trigger.entity_id) }}"
+                  short_name: >-
+                    Ambientika {{ state_attr(trigger.entity_id,
+                    'friendly_name').split(' ')[1] }}
+                  message: >-
+                    The filter of your <b>{{short_name}}</b> is in bad condition.
+                    <b>Please clean</b> it and reset the working hours.
+              - action: notify.notify
+                data:
+                  title: Ambiantika Filter
+                  message: "{{ message}}"
+                  data:
+                    tag: "{{ trigger.entity_id }}"
+                    visibility: public
+                    sticky: "true"
+                    notification_icon: mdi:air-filter
