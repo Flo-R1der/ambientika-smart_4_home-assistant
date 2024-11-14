@@ -16,3 +16,12 @@ rest_command:
         Bearer {{ states("input_text.ambientika_access_token") }}
     payload: '{"deviceSerialNumber":"{{ serial }}","operatingMode":{{ mode }},"fanSpeed":{{ fan }},"humidityLevel":{{ humidity }}}'
     content_type: "application/json"
+
+  ambientika_reset_filter:
+    url: '{{ rest_url }}'
+    method: GET
+    headers:
+      accept: "application/json"
+      Authorization: >
+        Bearer {{ states("input_text.ambientika_access_token") }}
+    content_type: "application/json"

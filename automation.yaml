@@ -120,6 +120,11 @@ automation:
           - sensor.ambientika_1_filter_status
         to: Bad
         id: bad_filter
+      - platform: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: RESET_FILTER_1
+        id: reset_filter
     condition: []
     action:
       - choose:
@@ -145,3 +150,19 @@ automation:
                     visibility: public
                     sticky: "true"
                     notification_icon: mdi:air-filter
+                    actions:
+                      - action: RESET_FILTER_1
+                        title: Reset Filter
+          - conditions:
+              - condition: trigger
+                id:
+                  - reset_filter
+            sequence:
+              - variables:
+                  device_serial: "{{ state_attr(trigger.event.data.tag, 'device_serial') }}"
+              - action: rest_command.ambientika_reset_filter
+                metadata: {}
+                data:
+                  rest_url: >-
+                    {{ 'https://app.ambientika.eu:4521/device/reset-filter' ~
+                    '?deviceSerialNumber=' ~ device_serial }}

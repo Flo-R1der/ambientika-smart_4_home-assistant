@@ -4,6 +4,8 @@ homeassistant:
       icon: mdi:key-chain
     automation.ambientika_1_change_mode:
       icon: mdi:hvac
+    sensor.ambientika_1_filter_status:
+      device_serial: !secret serial_device-1
     automation.ambientika_1_filter_notification:
       icon: mdi:air-filter
 
