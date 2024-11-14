@@ -1,41 +1,42 @@
-ambientika_reset_filters:
-  alias: Ambientika Reset Filters
-  sequence:
-    - variables:
-        bad_filters:
-          "{% set bad_filters = namespace(list=[]) %} {% for entity in states.sensor
-          if entity.entity_id is match('^.*ambientika.*filter.*status$') and entity.state
-          == 'Bad' %} {% set bad_filters.list = bad_filters.list + [entity.entity_id]
-          %} {% endfor %} {{ bad_filters.list }}"
-    - repeat:
-        for_each: "{{ bad_filters|list }}"
-        sequence:
-          - variables:
-              device_serial: "{{ state_attr(repeat.item, 'device_serial') }}"
-              short_name:
-                Ambientika {{ state_attr(repeat.item, 'friendly_name').split('
-                ')[1] }}
-              short_name_area: Ambientika {{ area_name(repeat.item) }}
-          - action: rest_command.ambientika_reset_filter
-            metadata: {}
-            data:
-              rest_url:
-                "{{ 'https://app.ambientika.eu:4521/device/reset-filter' ~ '?deviceSerialNumber='
-                ~ device_serial }}"
-            response_variable: result
-          - if:
-              - condition: template
-                value_template: "{{ result.status != 200 }}"
-            then:
-              - action: notify.notify
-                metadata: {}
-                data:
-                  title: ⚠️ Ambientika Filter-Reset failed
-                  message:
-                    Automatic filter reset for {{short_name}} failed. Please use
-                    the official app to reset the filter status.
+scripts:
+  ambientika_reset_filters:
+    alias: Ambientika Reset Filters
+    sequence:
+      - variables:
+          bad_filters:
+            "{% set bad_filters = namespace(list=[]) %} {% for entity in states.sensor
+            if entity.entity_id is match('^.*ambientika.*filter.*status$') and entity.state
+            == 'Bad' %} {% set bad_filters.list = bad_filters.list + [entity.entity_id]
+            %} {% endfor %} {{ bad_filters.list }}"
+      - repeat:
+          for_each: "{{ bad_filters|list }}"
+          sequence:
+            - variables:
+                device_serial: "{{ state_attr(repeat.item, 'device_serial') }}"
+                short_name:
+                  Ambientika {{ state_attr(repeat.item, 'friendly_name').split('
+                  ')[1] }}
+                short_name_area: Ambientika {{ area_name(repeat.item) }}
+            - action: rest_command.ambientika_reset_filter
+              metadata: {}
+              data:
+                rest_url:
+                  "{{ 'https://app.ambientika.eu:4521/device/reset-filter' ~ '?deviceSerialNumber='
+                  ~ device_serial }}"
+              response_variable: result
+            - if:
+                - condition: template
+                  value_template: "{{ result.status != 200 }}"
+              then:
+                - action: notify.notify
+                  metadata: {}
                   data:
-                    clickAction: app://sw.ambientika.app
-                    sticky: true
-  description: ""
-  icon: mdi:air-filter
+                    title: ⚠️ Ambientika Filter-Reset failed
+                    message:
+                      Automatic filter reset for {{short_name}} failed. Please use
+                      the official app to reset the filter status.
+                    data:
+                      clickAction: app://sw.ambientika.app
+                      sticky: true
+    description: ""
+    icon: mdi:air-filter
