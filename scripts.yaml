@@ -1,4 +1,4 @@
-scripts:
+script:
   ambientika_reset_filters:
     alias: Ambientika Reset Filters
     sequence:
