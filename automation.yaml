@@ -166,3 +166,22 @@ automation:
                   rest_url: >-
                     {{ 'https://app.ambientika.eu:4521/device/reset-filter' ~
                     '?deviceSerialNumber=' ~ device_serial }}
+                response_variable: result
+              - if:
+                  - condition: template
+                    value_template: "{{ result.status == 200 }}"
+                then:
+                  - action: notify.notify
+                    metadata: {}
+                    data:
+                      message: clear_notification
+                      data:
+                        tag: "{{ trigger.event.data.tag }}"
+                else:
+                  - action: notify.notify
+                    metadata: {}
+                    data:
+                      title: ⚠️ Ambientika Filter-Reset failed
+                      message: >-
+                        Automatic filter reset failed. Please use the official app
+                        to reset the filter status.
