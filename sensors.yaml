@@ -49,6 +49,25 @@ rest:
         value_template: "{{ value_json.airQuality | is_defined }}"
         name: Ambientika 1 Air-Quality
         icon: mdi:molecule-co2
+      - unique_id: ambientika_1_deviceRole
+        value_template: "{{ value_json.deviceRole | is_defined }}"
+        name: Ambientika 1 Device-Role
+        icon: >-
+          {% if states('sensor.ambientika_1_device_role') == 'Master' %}
+          mdi:star-box
+          {% elif states('sensor.ambientika_1_device_role') == 'SlaveEqualMaster' %}
+          mdi:link-box-variant
+          {% elif states('sensor.ambientika_1_device_role') == 'SlaveOppositeMaster' %}
+          mdi:link-box-variant
+          {% else %} mdi:help-box {% endif %}
+      - unique_id: ambientika_1_lightSensorLevel
+        value_template: "{{ value_json.lightSensorLevel | is_defined }}"
+        name: Ambientika 1 Light-Sensor
+        icon: mdi:theme-light-dark
+      - unique_id: ambientika_1_signalStrenght
+        value_template: "{{ value_json.signalStrenght | is_defined }}"
+        name: Ambientika 1 Signal
+        icon: mdi:wifi
     binary_sensor:
       - unique_id: ambientika_1_humidityAlarm
         value_template: "{{ value_json.humidityAlarm | is_defined }}"
