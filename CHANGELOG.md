@@ -1,7 +1,7 @@
 
 # Change Log
 All notable changes to this project will be documented in this file.  
-You can also take alook into the [Milestones](https://github.com/Flo-R1der/ambientika-smart_4_home-assistant/milestones) as I'm doing the detailed documentation there.
+You can also take alook into the [Milestones](https://github.com/Flo-R1der/ambientika-smart_4_home-assistant/milestones?state=closed) as I'm doing the detailed documentation there.
 
 
 ## [v0.1.1](https://github.com/Flo-R1der/ambientika-smart_4_home-assistant/milestone/1?closed=1) - 2024-11-??
@@ -10,12 +10,8 @@ You can also take alook into the [Milestones](https://github.com/Flo-R1der/ambie
 - Notification for bad filters
 - Script for filter-reset
 
-### Changed
-
-### Fixed
-
 
 <br>
 
-## [v0.1] - 2024-07-22
+## v0.1 - 2024-07-22
 - initial release
