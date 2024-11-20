@@ -68,6 +68,7 @@ rest:
         value_template: "{{ value_json.signalStrenght | is_defined }}"
         name: Ambientika 1 Signal
         icon: mdi:wifi
+        unit_of_measurement: "lqi"
     binary_sensor:
       - unique_id: ambientika_1_humidityAlarm
         value_template: "{{ value_json.humidityAlarm | is_defined }}"
