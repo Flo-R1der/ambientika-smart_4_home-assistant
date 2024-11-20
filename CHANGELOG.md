@@ -9,6 +9,7 @@ You can also take alook into the [Milestones](https://github.com/Flo-R1der/ambie
 - Auto-update on the 'input_select' and 'input_number' whenever the operating mode, seletcted fan-speed or humidity-level is changing; independent from the cause of change
 - Notification for bad filters
 - Script for filter-reset
+- Entities `deviceRole` `lightSensorLevel` and `signalStrenght` added
 
 
 <br>
