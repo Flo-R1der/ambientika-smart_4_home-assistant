@@ -140,3 +140,8 @@ Please note that the SVG images included in this package are originally from the
 - Copying the code to another Master like described in [No. 7](#7-duplicate-to-ambientika-2-if-you-have-multiple-master-devices) is also untested. If you find any issues, please let me know so that this can be fixed!
 - I am not able to provide a custom integration. If you are a developer and have the time and knowledge to do so, feel free to take my "code" or send me a message so that we can push this package forward to a more user-friendly integration.
 - A [Template-Fan](https://www.home-assistant.io/integrations/fan.template/) may be a thing. But I'm not sure, if this makes any sense with this device.
+
+<br>
+
+## Like my work?  
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/I3I4160K4Y)
