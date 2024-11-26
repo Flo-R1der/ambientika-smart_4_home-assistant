@@ -101,7 +101,7 @@ The idea here is: I would use numbering for entity names and IDs to reduce the a
 
 
 ### 7. Duplicate to "Ambientika 2" if you have multiple Master-devices
-The Feedback and my newer experience on master-slave logic is positive. In case you have multiple devices set as **Master** you need to copy all the yaml-code assigned with id/name "Ambientika 1" and duplicat it to "Ambientika 2" for example. On Windows machines you might use `CTRL + H` to start the mass replacement and:
+The Feedback and my newer experience on master-slave logic is positive. In case you have multiple devices set as **Master** you need to copy all the yaml-code assigned with id/name "Ambientika 1" and duplicate it to "Ambientika 2" for example. On Windows machines you might use `CTRL + H` to start the mass replacement and:
 - find: ``_1`` (most entities) / ``-1`` (secrets) *
 - replace: ``_2`` / ``-2``
 
@@ -131,13 +131,15 @@ Please note that the SVG images included in this package are originally from the
 | ![](images/lovelace_example-1.png) | [lovelace.yaml_example-1](lovelace.yaml_example-1) |
 | ![](images/lovelace_example-2.png) | [lovelace.yaml_example-2](lovelace.yaml_example-2) |
 | ![](images/lovelace_example-3.png) | [lovelace.yaml_example-3](lovelace.yaml_example-3) * |
+
 \* NOTE: This approach takes advantage of the [Mushroom Template Card](https://github.com/piitaya/lovelace-mushroom/blob/main/docs/cards/template.md). In order to use it you might install the Mushroom cards. I would recommend to use [HACS](https://hacs.xyz/) to install them.
 
 
 
 ## Open Topics
-- As of today (2024-11-13) the Package is tested with two devices in master-slave logic. It is working fine, but can only controll the master. However, retreiving sensor values from a slave is not tested untill now.
-- I am not able to provide a custom integration. If you are a developer and have the time and knowledge to do so, feel free to take my "code" or send me a message so that we can push this package forward to a more user-friendly integration.
+- The Package is tested with two devices in master-slave logic. I'm receiving values for the Slave by just duplicating the secret `device-status-x`, the corresponding REST-sensor and filter-sensors. Also the "Filter Notification" needs to be extended. However, this is not documented above.
+- Thankfully [JannickWe](https://github.com/JannickWe) also tested the package with two master devices. It is working fine, but you can only control the master-device!
+- I am not able to provide a custom integration. However, others managed to do so. You can find a custom Integration on Github ( [ambientika](https://github.com/ambientika) / [HomeAssistant-integration-for-Ambientika](https://github.com/ambientika/HomeAssistant-integration-for-Ambientika) ) and on the [HACS](https://www.hacs.xyz/).
 - A [Template-Fan](https://www.home-assistant.io/integrations/fan.template/) may be a thing. But I'm not sure, if this makes any sense with this device.
 
 <br>
