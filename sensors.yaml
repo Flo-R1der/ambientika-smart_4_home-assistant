@@ -63,7 +63,16 @@ rest:
       - unique_id: ambientika_1_lightSensorLevel
         value_template: "{{ value_json.lightSensorLevel | is_defined }}"
         name: Ambientika 1 Light-Sensor
-        icon: mdi:theme-light-dark
+        icon: >-
+          {% if states('sensor.ambientika_1_lightsensor_level') == 'NotAvailable' %}
+          mdi:weather-sunny-alert
+          {% if states('sensor.ambientika_1_lightsensor_level') == 'Off' %}
+          mdi:track-light-off
+          {% elif states('sensor.ambientika_1_lightsensor_level') == 'Low' %}
+          mdi:brightness-4
+          {% elif states('sensor.ambientika_1_lightsensor_level') == 'Medium' %}
+          mdi:brightness-6
+          {% else %} mdi:fan-alert {% endif %}
       - unique_id: ambientika_1_signalStrenght
         value_template: "{{ value_json.signalStrenght | is_defined }}"
         name: Ambientika 1 Signal
