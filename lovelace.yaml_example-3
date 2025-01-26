@@ -1,3 +1,5 @@
+# Example with Mushroom Template Cards
+# More Info: https://github.com/piitaya/lovelace-mushroom/blob/main/docs/cards/template.md
 type: vertical-stack
 title: Wohnraumlüftung
 cards:
@@ -124,3 +126,17 @@ cards:
         row:
           entity: input_number.ambientika_1_humiditylevel
           name: Luftfeuchtigkeit
+      - type: conditional
+        conditions:
+          - entity: input_select.ambientika_1_mode
+            state: Smart
+        row:
+          entity: input_number.ambientika_1_lightlevel
+          name: Lichtsensor
+      - type: conditional
+        conditions:
+          - entity: input_select.ambientika_1_mode
+            state: Auto
+        row:
+          entity: input_number.ambientika_1_lightlevel
+          name: Lichtsensor
