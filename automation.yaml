@@ -38,12 +38,14 @@ automation:
           - input_select.ambientika_1_mode
           - input_number.ambientika_1_fanspeed
           - input_number.ambientika_1_humiditylevel
+          - input_number.ambientika_1_lightlevel
         id: change_mode
       - platform: state
         entity_id:
           - sensor.ambientika_1_operating_mode
           - sensor.ambientika_1_fan_speed
           - sensor.ambientika_1_humidity_level
+          - sensor.ambientika_1_lightsensor_level
         id: mode_changed
     condition:
       - condition: template
@@ -62,6 +64,7 @@ automation:
                   mode: '"{{ states("input_select.ambientika_1_mode") }}"'
                   fan: "{{ states('input_number.ambientika_1_fanSpeed')|int - 1 }}"
                   humidity: "{{ states('input_number.ambientika_1_humidityLevel')|int - 1 }}"
+                  light: "{{ states('input_number.ambientika_1_lightLevel')|int - 1 }}"
               - delay:
                   hours: 0
                   minutes: 0
@@ -79,7 +82,8 @@ automation:
                 value_template:
                   "{{ states('sensor.ambientika_1_operating_mode') not in ['unavailable', 'unknown'] and
                   states('sensor.ambientika_1_fan_speed') not in ['unavailable', 'unknown'] and
-                  states('sensor.ambientika_1_humidity_level') not in ['unavailable', 'unknown'] }}"
+                  states('sensor.ambientika_1_humidity_level') not in ['unavailable', 'unknown'] and
+                  states('sensor.ambientika_1_lightsensor_level') not in ['unavailable', 'unknown'] }}"
             sequence:
               - action: input_select.select_option
                 target:
@@ -99,6 +103,13 @@ automation:
                     {% elif states('sensor.ambientika_1_humidity_level') == 'Moist' %} 3
                     {% else %} {{ states('input_number.ambientika_1_humiditylevel') }}
                     {% endif %}"
+                  lightsensorlevel:
+                    "{% if states('sensor.ambientika_1_lightsensor_level') == 'NotAvailable' %} 1
+                    {% if states('sensor.ambientika_1_lightsensor_level') == 'Off' %} 2
+                    {% elif states('sensor.ambientika_1_lightsensor_level') == 'Low' %} 3
+                    {% elif states('sensor.ambientika_1_lightsensor_level') == 'Medium' %} 4
+                    {% else %} {{ states('input_number.ambientika_1_lightlevel') }}
+                    {% endif %}"
               - action: input_number.set_value
                 target:
                   entity_id: input_number.ambientika_1_fanspeed
@@ -109,6 +120,11 @@ automation:
                   entity_id: input_number.ambientika_1_humiditylevel
                 data:
                   value: "{{ humiditylevel|float }}"
+              - action: input_number.set_value
+                target:
+                  entity_id: input_number.ambientika_1_lightlevel
+                data:
+                  value: "{{ lightsensorlevel|float }}"
 
   - id: automation.ambientika_1_filter_notification
     alias: Ambientika 1 Filter Notification

@@ -15,6 +15,7 @@ switch:
               mode: '"{{ states("input_select.ambientika_1_mode") }}"'
               fan: "{{ states('input_number.ambientika_1_fanSpeed')|int - 1 }}"
               humidity: "{{ states('input_number.ambientika_1_humidityLevel')|int - 1 }}"
+              light: "{{ states('input_number.ambientika_1_lightLevel')|int - 1 }}"
           - delay: "00:00:03"
           - service: homeassistant.update_entity
             target:
@@ -27,6 +28,7 @@ switch:
               mode: '"Off"'
               fan: "{{ states('input_number.ambientika_1_fanSpeed')|int - 1 }}"
               humidity: "{{ states('input_number.ambientika_1_humidityLevel')|int - 1 }}"
+              light: "{{ states('input_number.ambientika_1_lightLevel')|int - 1 }}"
           - delay: "00:00:03"
           - service: homeassistant.update_entity
             target:
