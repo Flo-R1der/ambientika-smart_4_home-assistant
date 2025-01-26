@@ -45,7 +45,7 @@ automation:
           - sensor.ambientika_1_operating_mode
           - sensor.ambientika_1_fan_speed
           - sensor.ambientika_1_humidity_level
-          - sensor.ambientika_1_lightsensor_level
+          - sensor.ambientika_1_lightlevel
         id: mode_changed
     condition:
       - condition: template
@@ -64,7 +64,7 @@ automation:
                   mode: '"{{ states("input_select.ambientika_1_mode") }}"'
                   fan: "{{ states('input_number.ambientika_1_fanSpeed')|int - 1 }}"
                   humidity: "{{ states('input_number.ambientika_1_humidityLevel')|int - 1 }}"
-                  light: "{{ states('input_number.ambientika_1_lightLevel')|int - 1 }}"
+                  light: "{{ states('input_number.ambientika_1_lightLevel')|int + 1 }}"
               - delay:
                   hours: 0
                   minutes: 0
@@ -83,7 +83,7 @@ automation:
                   "{{ states('sensor.ambientika_1_operating_mode') not in ['unavailable', 'unknown'] and
                   states('sensor.ambientika_1_fan_speed') not in ['unavailable', 'unknown'] and
                   states('sensor.ambientika_1_humidity_level') not in ['unavailable', 'unknown'] and
-                  states('sensor.ambientika_1_lightsensor_level') not in ['unavailable', 'unknown'] }}"
+                  states('sensor.ambientika_1_light_sensor') not in ['unavailable', 'unknown'] }}"
             sequence:
               - action: input_select.select_option
                 target:
@@ -104,10 +104,10 @@ automation:
                     {% else %} {{ states('input_number.ambientika_1_humiditylevel') }}
                     {% endif %}"
                   lightsensorlevel:
-                    "{% if states('sensor.ambientika_1_lightsensor_level') == 'NotAvailable' %} 1
-                    {% if states('sensor.ambientika_1_lightsensor_level') == 'Off' %} 2
-                    {% elif states('sensor.ambientika_1_lightsensor_level') == 'Low' %} 3
-                    {% elif states('sensor.ambientika_1_lightsensor_level') == 'Medium' %} 4
+                    "{% if states('sensor.ambientika_1_lightlevel') == 'NotAvailable' %} -1
+                    {% elif states('sensor.ambientika_1_lightlevel') == 'Off' %} 0
+                    {% elif states('sensor.ambientika_1_lightlevel') == 'Low' %} 1
+                    {% elif states('sensor.ambientika_1_lightlevel') == 'Medium' %} 2
                     {% else %} {{ states('input_number.ambientika_1_lightlevel') }}
                     {% endif %}"
               - action: input_number.set_value
