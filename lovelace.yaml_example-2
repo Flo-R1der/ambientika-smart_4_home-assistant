@@ -79,6 +79,8 @@ cards:
           name: Luftfeuchtigkeit
       - type: conditional
         conditions:
+          - entity: sensor.ambientika_1_light_sensor
+            state_not: NotAvailable
           - entity: input_select.ambientika_1_mode
             state: Smart
         row:
@@ -86,6 +88,8 @@ cards:
           name: Lichtsensor
       - type: conditional
         conditions:
+          - entity: sensor.ambientika_1_light_sensor
+            state_not: NotAvailable
           - entity: input_select.ambientika_1_mode
             state: Auto
         row:
