@@ -16,7 +16,7 @@ If you are interested in the **reverse-engineering process** see the correspondi
 > _However, if you find technical problems with this package (e.g., server changes, compatibility issues, YAML syntax changes, etc.), feel free to open an issue. Or even better: fix the issue and submit a pull request. The same applies to feature requests and enhancements._  
 
 > [!IMPORTANT]  
-> This setup assumes that you have an account registered in the official app and that **your Ambientika Device is already working** via the official App._  
+> This setup assumes that you have an account registered in the official app and that **your Ambientika Device is already working** via the official App.
 
 ### 1. Download and extract the package to the config folder
 Download the repository from GitHub as ZIP-file, extract it and place it in the correct folder:
@@ -106,13 +106,14 @@ The idea here is: I would use numbering for entity names and IDs to reduce the a
 
 ### 7. Duplicate to "Ambientika 2" if you have multiple Master-devices
 > [!NOTE]  
-> The current approach is subject to change. See #11 for details.
+> The current approach is subject to change. See [#11](https://github.com/Flo-R1der/ambientika-smart_4_home-assistant/issues/11) for details.
 
 In case you have multiple devices set as **Master** you need to copy all the yaml-code assigned with id/name "Ambientika 1" and duplicate it to "Ambientika 2" for example. On Windows machines you might use `CTRL + H` to start the mass replacement and:
 - find: ``_1`` (most entities) / ``-1`` (secrets) *
 - replace: ``_2`` / ``-2``
 
-> \* don't use only `1` as it will also change values for fan speed or port-number for the REST-API which will break your package!
+> [!WARNING]  
+> \* don't use only `1` in the "find" field as it will also change values for fan speed or port-number for the REST-API which will break your package!
 
 This needs to be done for:
 - ``automation.yaml`` (here, a `variables:`-section is already implemented for simplification )
