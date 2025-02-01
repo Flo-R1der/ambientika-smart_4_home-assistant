@@ -21,7 +21,7 @@ input_number:
     icon: mdi:water
   ambientika_1_lightlevel:
     name: Ambientika 1 Light-Level
-    min: -1
+    min: 0
     max: 2
     step: 1
     icon: mdi:theme-light-dark

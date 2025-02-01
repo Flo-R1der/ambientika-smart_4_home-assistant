@@ -45,86 +45,94 @@ automation:
           - sensor.ambientika_1_operating_mode
           - sensor.ambientika_1_fan_speed
           - sensor.ambientika_1_humidity_level
-          - sensor.ambientika_1_lightlevel
+          - sensor.ambientika_1_light_sensor
         id: mode_changed
     condition:
       - condition: template
         value_template: >-
           {{ now() > as_datetime(this.attributes.last_triggered, today_at("00:00")) + timedelta(seconds=2) }}
     action:
-      - choose:
-          - conditions:
-              - condition: trigger
-                id:
-                  - change_mode
-            sequence:
-              - service: rest_command.ambientika_change_mode
-                data:
-                  serial: !secret serial_device-1
-                  mode: '"{{ states("input_select.ambientika_1_mode") }}"'
-                  fan: "{{ states('input_number.ambientika_1_fanSpeed')|int - 1 }}"
-                  humidity: "{{ states('input_number.ambientika_1_humidityLevel')|int - 1 }}"
-                  light: "{{ states('input_number.ambientika_1_lightLevel')|int + 1 }}"
-              - delay:
-                  hours: 0
-                  minutes: 0
-                  seconds: 3
-                  milliseconds: 0
-              - service: homeassistant.update_entity
-                data: {}
-                target:
-                  entity_id: sensor.ambientika_1_operating_mode
-          - conditions:
-              - condition: trigger
-                id:
-                  - mode_changed
-              - condition: template
-                value_template:
-                  "{{ states('sensor.ambientika_1_operating_mode') not in ['unavailable', 'unknown'] and
-                  states('sensor.ambientika_1_fan_speed') not in ['unavailable', 'unknown'] and
-                  states('sensor.ambientika_1_humidity_level') not in ['unavailable', 'unknown'] and
-                  states('sensor.ambientika_1_light_sensor') not in ['unavailable', 'unknown'] }}"
-            sequence:
-              - action: input_select.select_option
-                target:
-                  entity_id: input_select.ambientika_1_mode
-                data:
-                  option: "{{ states('sensor.ambientika_1_operating_mode') }}"
-              - variables:
-                  fanspeed:
-                    "{% if states('sensor.ambientika_1_fan_speed') == 'Low' %} 1
-                    {% elif states('sensor.ambientika_1_fan_speed') == 'Medium' %} 2
-                    {% elif states('sensor.ambientika_1_fan_speed') == 'High' %} 3
-                    {% else %} {{ states('input_number.ambientika_1_fanspeed') }}
-                    {% endif %}"
-                  humiditylevel:
-                    "{% if states('sensor.ambientika_1_humidity_level') == 'Dry' %} 1
-                    {% elif states('sensor.ambientika_1_humidity_level') == 'Normal' %} 2
-                    {% elif states('sensor.ambientika_1_humidity_level') == 'Moist' %} 3
-                    {% else %} {{ states('input_number.ambientika_1_humiditylevel') }}
-                    {% endif %}"
-                  lightsensorlevel:
-                    "{% if states('sensor.ambientika_1_lightlevel') == 'NotAvailable' %} -1
-                    {% elif states('sensor.ambientika_1_lightlevel') == 'Off' %} 0
-                    {% elif states('sensor.ambientika_1_lightlevel') == 'Low' %} 1
-                    {% elif states('sensor.ambientika_1_lightlevel') == 'Medium' %} 2
-                    {% else %} {{ states('input_number.ambientika_1_lightlevel') }}
-                    {% endif %}"
-              - action: input_number.set_value
-                target:
-                  entity_id: input_number.ambientika_1_fanspeed
-                data:
-                  value: "{{ fanspeed|float }}"
-              - action: input_number.set_value
-                target:
-                  entity_id: input_number.ambientika_1_humiditylevel
-                data:
-                  value: "{{ humiditylevel|float }}"
-              - action: input_number.set_value
-                target:
-                  entity_id: input_number.ambientika_1_lightlevel
-                data:
-                  value: "{{ lightsensorlevel|float }}"
+      - if:
+          - condition: trigger
+            id:
+              - mode_changed
+        then:
+          - condition: template
+            value_template: >-
+              {{ states('sensor.ambientika_1_operating_mode') not in ['unavailable', 'unknown'] and
+              states('sensor.ambientika_1_fan_speed') not in ['unavailable', 'unknown'] and
+              states('sensor.ambientika_1_humidity_level') not in ['unavailable', 'unknown'] and
+              states('sensor.ambientika_1_light_sensor') not in ['unavailable', 'unknown'] }}
+          - action: input_select.select_option
+            target:
+              entity_id: input_select.ambientika_1_mode
+            data:
+              option: "{{ states('sensor.ambientika_1_operating_mode') }}"
+          - variables:
+              fanspeed: >-
+                {% if states('sensor.ambientika_1_fan_speed') == 'Low' %} 1
+                {% elif states('sensor.ambientika_1_fan_speed') == 'Medium' %} 2
+                {% elif states('sensor.ambientika_1_fan_speed') == 'High' %} 3
+                {% else %} {{ states('input_number.ambientika_1_fanspeed') }}
+                {% endif %}
+              humiditylevel: >-
+                {% if states('sensor.ambientika_1_humidity_level') == 'Dry' %} 1
+                {% elif states('sensor.ambientika_1_humidity_level') == 'Normal' %} 2
+                {% elif states('sensor.ambientika_1_humidity_level') == 'Moist' %} 3
+                {% else %} {{ states('input_number.ambientika_1_humiditylevel') }}
+                {% endif %}
+              lightsensorlevel: >-
+                {% if states('sensor.ambientika_1_light_sensor') == 'NotAvailable' %} 0
+                {% elif states('sensor.ambientika_1_light_sensor') == 'Off' %} 0
+                {% elif states('sensor.ambientika_1_light_sensor') == 'Low' %} 1
+                {% elif states('sensor.ambientika_1_light_sensor') == 'Medium' %} 2
+                {% else %} {{ states('input_number.ambientika_1_lightlevel') }}
+                {% endif %}
+          - action: input_number.set_value
+            target:
+              entity_id: input_number.ambientika_1_fanspeed
+            data:
+              value: "{{ fanspeed|float }}"
+          - action: input_number.set_value
+            target:
+              entity_id: input_number.ambientika_1_humiditylevel
+            data:
+              value: "{{ humiditylevel|float }}"
+          - action: input_number.set_value
+            target:
+              entity_id: input_number.ambientika_1_lightlevel
+            data:
+              value: "{{ lightsensorlevel|float }}"
+        else:
+          - variables:
+              operatingmode: >-
+                {## if trigger.to_state is not defined, assuming switch as trigger ##}
+                {% if trigger.to_state is not defined and is_state('switch.ambientika_1', 'on') %} Off
+                {% else %} {{ states('input_select.ambientika_1_mode') }}
+                {% endif %}
+              fanspeed: >-
+                {{ states('input_number.ambientika_1_fanSpeed')|int - 1 }}
+              humiditylevel: >-
+                {{ states('input_number.ambientika_1_humidityLevel')|int - 1 }}
+              lightlevel: >-
+                {% if is_state('sensor.ambientika_1_light_sensor', 'NotAvailable') %} 0
+                {% else %} {{ states('input_number.ambientika_1_lightlevel')|int + 1 }}
+                {% endif %}
+          - action: rest_command.ambientika_change_mode
+            data:
+              serial: !secret serial_device-1
+              mode: "\"{{ operatingmode }}\""
+              fan: "{{ fanspeed }}"
+              humidity: "{{ humiditylevel }}"
+              light: "{{ lightlevel }}"
+          - delay:
+              hours: 0
+              minutes: 0
+              seconds: 3
+              milliseconds: 0
+          - action: homeassistant.update_entity
+            target:
+              entity_id: sensor.ambientika_1_operating_mode
 
   - id: automation.ambientika_1_filter_notification
     alias: Ambientika 1 Filter Notification
