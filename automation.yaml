@@ -58,11 +58,15 @@ automation:
               - mode_changed
         then:
           - condition: template
+            alias: Check if any sensor is in 'unavailable' or 'unknown'
             value_template: >-
               {{ states('sensor.ambientika_1_operating_mode') not in ['unavailable', 'unknown'] and
               states('sensor.ambientika_1_fan_speed') not in ['unavailable', 'unknown'] and
               states('sensor.ambientika_1_humidity_level') not in ['unavailable', 'unknown'] and
               states('sensor.ambientika_1_light_sensor') not in ['unavailable', 'unknown'] }}
+          - condition: template
+            alias: Check if "Operating-Mode" is 'Off'
+            value_template: "{{ states('sensor.ambientika_1_operating_mode') != 'Off' }}"
           - action: input_select.select_option
             target:
               entity_id: input_select.ambientika_1_mode
