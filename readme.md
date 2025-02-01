@@ -14,10 +14,9 @@ If you are interested in the **reverse-engineering process** see the correspondi
 > **Note**: _This package is delivered "as-is" → do not expect to get support in this repository!_  
 > _However, if you find technical problems with this package (e.g., server changes, compatibility issues, YAML syntax changes, etc.), feel free to open an issue. Or even better: fix the issue and submit a pull request. The same applies to feature requests and enhancements._  
 
+> _**Important**: This setup assumes that you have an account registered in the official app and that **your Ambientika Device is already working** via the official App._  
 
 ### 1. Download and extract the package to the config folder
-> _**Important**: Important: This setup assumes that you have an account registered in the official app and that **your Ambientika Device is already working** via the official App._  
-
 Download the repository from GitHub as ZIP-file, extract it and place it in the correct folder:
 `/config/packages/ambientika_smart`
 <details>
@@ -101,19 +100,23 @@ The idea here is: I would use numbering for entity names and IDs to reduce the a
 
 
 ### 7. Duplicate to "Ambientika 2" if you have multiple Master-devices
-The Feedback and my newer experience on master-slave logic is positive. In case you have multiple devices set as **Master** you need to copy all the yaml-code assigned with id/name "Ambientika 1" and duplicate it to "Ambientika 2" for example. On Windows machines you might use `CTRL + H` to start the mass replacement and:
+> **Note**: The current approach is subject to change. See #11 for details.
+
+In case you have multiple devices set as **Master** you need to copy all the yaml-code assigned with id/name "Ambientika 1" and duplicate it to "Ambientika 2" for example. On Windows machines you might use `CTRL + H` to start the mass replacement and:
 - find: ``_1`` (most entities) / ``-1`` (secrets) *
 - replace: ``_2`` / ``-2``
 
 > \* don't use only `1` as it will also change values for fan speed or port-number for the REST-API which will break your package!
 
 This needs to be done for:
-- ``automation.yaml``
+- ``automation.yaml`` (here, a `variables:`-section is already implemented for simplification )
 - ``customize.yaml``
 - ``helpers.yaml``
 - ``secrets.yaml``
 - ``sensors.yaml``
 - ``switch.yaml``
+
+Repeat this step, if you have even more Master devices.
 
 -----
 
@@ -132,13 +135,12 @@ Please note that the SVG images included in this package are originally from the
 | ![](images/lovelace_example-2.png) | [lovelace.yaml_example-2](lovelace.yaml_example-2) |
 | ![](images/lovelace_example-3.png) | [lovelace.yaml_example-3](lovelace.yaml_example-3) * |
 
-\* NOTE: This approach takes advantage of the [Mushroom Template Card](https://github.com/piitaya/lovelace-mushroom/blob/main/docs/cards/template.md). In order to use it you might install the Mushroom cards. I would recommend to use [HACS](https://hacs.xyz/) to install them.
+\* This approach takes advantage of the [Mushroom Template Card](https://github.com/piitaya/lovelace-mushroom/blob/main/docs/cards/template.md). In order to use it you must install the Mushroom cards first. I would recommend to use [HACS](https://hacs.xyz/) to install them.
 
 
 
 ## Open Topics
 - The Package is tested with two devices in master-slave logic. I'm receiving values for the Slave by just duplicating the secret `device-status-x`, the corresponding REST-sensor and filter-sensors. Also the "Filter Notification" needs to be extended. However, this is not documented above.
-- Thankfully [JannickWe](https://github.com/JannickWe) also tested the package with two master devices. It is working fine, but you can only control the master-device!
 - I am not able to provide a custom integration. However, others managed to do so. You can find a custom Integration on Github ( [ambientika](https://github.com/ambientika) / [HomeAssistant-integration-for-Ambientika](https://github.com/ambientika/HomeAssistant-integration-for-Ambientika) ) and on the [HACS](https://www.hacs.xyz/).
 - A [Template-Fan](https://www.home-assistant.io/integrations/fan.template/) may be a thing. But I'm not sure, if this makes any sense with this device.
 
