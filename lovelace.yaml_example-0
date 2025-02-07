@@ -11,7 +11,9 @@ entities:
     show_state: true
   - entity: sensor.ambientika_1_humidity_filtered
     show_state: true
-  - entity: sensor.ambientika_1_filter_status
-    show_state: true
   - entity: sensor.ambientika_1_air_quality
+    show_state: true
+  - entity: sensor.ambientika_1_light_sensor
+    show_state: true
+  - entity: sensor.ambientika_1_filter_status
     show_state: true

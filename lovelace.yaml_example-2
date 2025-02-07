@@ -32,7 +32,7 @@ cards:
                 {%- set fan_speed_icon = state_attr('sensor.ambientika_1_fan_speed', 'icon') -%}
                 {%- set humid_level = states('sensor.ambientika_1_humidity_level') -%}
                 {%- set humid_level_icon = state_attr('sensor.ambientika_1_humidity_level', 'icon') -%}
-                {%- if OperatingMode in ['Auto', 'Survillance'] -%}
+                {%- if OperatingMode in ['Auto', 'Surveillance'] -%}
                 Ziel: <ha-icon icon='{{humid_level_icon}}'></ha-icon> {{humid_level}}
                 {%- elif OperatingMode in ['ManualHeatRecovery'] -%}
                 <ha-icon icon='{{fan_speed_icon}}'></ha-icon> {{fan_speed}}
@@ -73,7 +73,25 @@ cards:
       - type: conditional
         conditions:
           - entity: input_select.ambientika_1_mode
-            state: Surveillance
+            state: Survillance
         row:
           entity: input_number.ambientika_1_humiditylevel
           name: Luftfeuchtigkeit
+      - type: conditional
+        conditions:
+          - entity: sensor.ambientika_1_light_sensor
+            state_not: NotAvailable
+          - entity: input_select.ambientika_1_mode
+            state: Smart
+        row:
+          entity: input_number.ambientika_1_lightlevel
+          name: Lichtsensor
+      - type: conditional
+        conditions:
+          - entity: sensor.ambientika_1_light_sensor
+            state_not: NotAvailable
+          - entity: input_select.ambientika_1_mode
+            state: Auto
+        row:
+          entity: input_number.ambientika_1_lightlevel
+          name: Lichtsensor

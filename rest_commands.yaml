@@ -14,7 +14,7 @@ rest_command:
       accept: "application/json"
       Authorization: >
         Bearer {{ states("input_text.ambientika_access_token") }}
-    payload: '{"deviceSerialNumber":"{{ serial }}","operatingMode":{{ mode }},"fanSpeed":{{ fan }},"humidityLevel":{{ humidity }}}'
+    payload: '{"deviceSerialNumber":"{{ serial }}","operatingMode":{{ mode }},"fanSpeed":{{ fan }},"humidityLevel":{{ humidity }},"lightSensorLevel":{{ light }}}'
     content_type: "application/json"
 
   ambientika_reset_filter:
