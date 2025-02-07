@@ -148,8 +148,10 @@ Please note that the SVG images included in this package are originally from the
 
 
 ## Open Topics
-- The Package is tested with two devices in master-slave logic. I'm receiving values for the Slave by just duplicating the secret `device-status-x`, the corresponding REST-sensor and filter-sensors. Also the "Filter Notification" needs to be extended. However, this is not documented above.
-- I am not able to provide a custom integration. However, others managed to do so. You can find a custom Integration on Github ( [ambientika](https://github.com/ambientika) / [HomeAssistant-integration-for-Ambientika](https://github.com/ambientika/HomeAssistant-integration-for-Ambientika) ) and on the [HACS](https://www.hacs.xyz/).
+- The Package is tested with two devices in master-slave logic, but duplicating like described above is pretty inconvenient. Therefore the structure structure should be improved. See #11 for details and status. 
+- I'm receiving values for the Slave by just duplicating the secret `device-status-x`, the corresponding REST-sensor and filter-sensors. Also the "Filter Notification" needs to be extended. However, this is not documented above.
+- I am not able to provide a custom integration. However, others managed to do so. You can find the official Integration on Github: **[ambientika](https://github.com/ambientika) / [HomeAssistant-integration-for-Ambientika](https://github.com/ambientika/HomeAssistant-integration-for-Ambientika)** and on [HACS](https://www.hacs.xyz/).
+- This package and the official integration is depending on the cloud with all advantages and disadvantages. If you like to get a local control of your device, you might check this repository: [sragas / ambientika-local-control](https://github.com/sragas/ambientika-local-control). But the documentation is not on the desired level which makes this a more advanced and sophisticated approach.
 - A [Template-Fan](https://www.home-assistant.io/integrations/fan.template/) may be a thing. But I'm not sure, if this makes any sense with this device.
 
 <br>
