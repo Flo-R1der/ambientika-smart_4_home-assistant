@@ -73,14 +73,6 @@ automation:
               states(sensor_fanspeed) not in ['unavailable', 'unknown'] and
               states(sensor_humiditylevel) not in ['unavailable', 'unknown'] and
               states(sensor_lightsensor) not in ['unavailable', 'unknown'] }}
-          - condition: template
-            alias: Check if "Operating-Mode" is 'Off'
-            value_template: "{{ states(sensor_operatingmode) != 'Off' }}"
-          - action: input_select.select_option
-            target:
-              entity_id: "{{ input_operatingmode }}"
-            data:
-              option: "{{ states(sensor_operatingmode) }}"
           - variables:
               fanspeed: >-
                 {% if states(sensor_fanspeed) == 'Low' %} 1
@@ -116,6 +108,14 @@ automation:
               entity_id: "{{ input_lightlevel }}"
             data:
               value: "{{ lightsensorlevel|float }}"
+          - condition: template
+            alias: Check if "Operating-Mode" is 'Off'
+            value_template: "{{ states(sensor_operatingmode) != 'Off' }}"
+          - action: input_select.select_option
+            target:
+              entity_id: "{{ input_operatingmode }}"
+            data:
+              option: "{{ states(sensor_operatingmode) }}"
         else:
           - variables:
               operatingmode: >-
