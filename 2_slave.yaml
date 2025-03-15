@@ -1,0 +1,111 @@
+rest:
+  # here, MULTIPLE sensors are set up using the same REST-endpoint
+  - resource: !secret ambientika_device_status_2
+    headers:
+      Authorization: >
+        Bearer {{ states("input_text.ambientika_access_token") }}
+    sensor:
+      - unique_id: ambientika_slave_2_operatingMode
+        value_template: "{{ value_json.operatingMode | is_defined }}"
+        name: Ambientika Slave-2 Operating Mode
+        icon: mdi:leaf-circle-outline
+      - unique_id: ambientika_slave_2_lastOperatingMode
+        value_template: "{{ value_json.lastOperatingMode | is_defined }}"
+        name: Ambientika Slave-2 lastOperatingMode
+      - unique_id: ambientika_slave_2_fanSpeed
+        value_template: "{{ value_json.fanSpeed | is_defined }}"
+        # this is the defined fan speed for Mode: "ManualHeatRecovery"
+        name: Ambientika Slave-2 Fan-Speed
+        icon: >-
+          {% if states('sensor.ambientika_slave_2_fan_speed') == 'Low' %}
+          mdi:fan-speed-1
+          {% elif states('sensor.ambientika_slave_2_fan_speed') == 'Medium' %}
+          mdi:fan-speed-2
+          {% elif states('sensor.ambientika_slave_2_fan_speed') == 'High' %}
+          mdi:fan-speed-3
+          {% else %} mdi:fan-alert {% endif %}
+      - unique_id: ambientika_slave_2_humidityLevel
+        value_template: "{{ value_json.humidityLevel | is_defined }}"
+        # this is the defined humidityLevel for Mode: "Auto" and "Surveillance"
+        name: Ambientika Slave-2 Humidity-Level
+        icon: mdi:water
+      - unique_id: ambientika_slave_2_filtersStatus
+        value_template: "{{ value_json.filtersStatus | is_defined }}"
+        name: Ambientika Slave-2 Filter-Status
+        icon: mdi:air-filter
+      - unique_id: ambientika_slave_2_temperature
+        value_template: "{{ float(value_json.temperature, default='unavailable') }}"
+        name: Ambientika Slave-2 Temperature (raw)
+        icon: mdi:thermometer
+        device_class: temperature
+        unit_of_measurement: "°C"
+      - unique_id: ambientika_slave_2_humidity
+        value_template: "{{ float(value_json.humidity, default='unavailable') }}"
+        name: Ambientika Slave-2 Humidity (raw)
+        icon: mdi:water-percent
+        device_class: humidity
+        unit_of_measurement: "%"
+      - unique_id: ambientika_slave_2_airQuality
+        value_template: "{{ value_json.airQuality | is_defined }}"
+        name: Ambientika Slave-2 Air-Quality
+        icon: mdi:molecule-co2
+      - unique_id: ambientika_slave_2_deviceRole
+        value_template: "{{ value_json.deviceRole | is_defined }}"
+        name: Ambientika Slave-2 Device-Role
+        icon: >-
+          {% if states('sensor.ambientika_slave_2_device_role') == 'Master' %}
+          mdi:star-box
+          {% elif states('sensor.ambientika_slave_2_device_role') == 'SlaveEqualMaster' %}
+          mdi:link-box-variant
+          {% elif states('sensor.ambientika_slave_2_device_role') == 'SlaveOppositeMaster' %}
+          mdi:link-box-variant
+          {% else %} mdi:help-box {% endif %}
+      - unique_id: ambientika_slave_2_lightSensorLevel
+        value_template: "{{ value_json.lightSensorLevel | is_defined }}"
+        name: Ambientika Slave-2 Light-Sensor
+        icon: mdi:theme-light-dark
+      - unique_id: ambientika_slave_2_signalStrenght
+        value_template: "{{ value_json.signalStrenght | is_defined }}"
+        name: Ambientika Slave-2 Signal
+        icon: mdi:wifi
+        unit_of_measurement: "lqi"
+    binary_sensor:
+      - unique_id: ambientika_slave_2_humidityAlarm
+        value_template: "{{ value_json.humidityAlarm | is_defined }}"
+        name: Ambientika Slave-2 Humidity-Alarm
+        icon: mdi:water-percent-alert
+      - unique_id: ambientika_slave_2_nightAlarm
+        value_template: "{{ value_json.nightAlarm | is_defined }}"
+        name: Ambientika Slave-2 Night-Alarm
+        icon: mdi:water-percent-alert
+
+
+homeassistant:
+  customize:
+    sensor.ambientika_slave_2_filter_status:
+      device_serial: !secret ambientika_device_serial_2
+      # This is used for the filter reset automation.
+      # Unfortunately, the filter reset does not work at all on slave devices, 
+      # even tho is should work imho. Hopefully this will be supported in the future!
+
+
+sensor:
+  - platform: filter
+    unique_id: ambientika_slave_2_humidity_filtered
+    name: Ambientika Slave-2 Humidity (filtered)
+    entity_id: sensor.ambientika_slave_2_humidity_raw
+    filters:
+      - filter: time_simple_moving_average
+        window_size: "00:09"
+        precision: 0
+      - filter: lowpass
+        time_constant: 3
+        precision: 0
+  - platform: filter
+    unique_id: ambientika_slave_2_temperature_filtered
+    name: Ambientika Slave-2 Temperature (filtered)
+    entity_id: sensor.ambientika_slave_2_temperature_raw
+    filters:
+      - filter: time_simple_moving_average
+        window_size: "00:05"
+        precision: 1

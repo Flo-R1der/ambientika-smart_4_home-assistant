@@ -35,13 +35,18 @@ Download the repository from GitHub as ZIP-file, extract it and place it in the 
 Add the `homeassistant:`, `package:` and `ambientika_smart:` lines to your configuration.yaml as shown in my example here:
 ``````
 homeassistant:
-  customize: !include customize.yaml     # optional, only if you are using customizations
   packages:
-    ambientika_smart: !include_dir_merge_named packages/ambientika_smart
-    package-2: !include_dir_merge_named packages/package-2
+    ambientika_smart_0: !include packages/ambientika_smart/0_general.yaml
+    ambientika_smart_1: !include packages/ambientika_smart/1_master.yaml
+    ambientika_smart_2: !include packages/ambientika_smart/2_slave.yaml
     ...
-# This is an example configuration.yaml setup.
 ``````
+> [!WARNING]  
+> Never delete or edit the `ambientika_smart_0:` or `0_general.yaml`. It provides some general mandatory stuff for this package. If deleted, the package will not work!  
+
+> [!NOTE]  
+> For each device you want to integrate you need a line with `ambientika_smart_x` _(where **x** represents any number)_. 
+> You can rename the *.yaml as you like, but make sure to pick the right one depending on your device role (Master/Slave).
 
 
 ### 3. Setting up `secrets.yaml`:
@@ -52,22 +57,30 @@ First, navigate to the `packages/ambientika_smart/` folder and
 ambientika_username: "example@yahoo.com"
 ambientika_password: "my-secret-password"
 
-serial_device-1: 1234567890ABC
+ambientika_device_serial_1: 1234567890ABC
+ambientika_device_serial_1: 4567890ABCDEF
 
-device-status-1: https://app.ambientika.eu:4521/device/device-status?deviceSerialNumber=1234567890ABC
+ambientika_device_status_1: https://app.ambientika.eu:4521/device/device-status?deviceSerialNumber=1234567890ABC
+ambientika_device_status_1: https://app.ambientika.eu:4521/device/device-status?deviceSerialNumber=4567890ABCDEF
 ``````
 > [!NOTE]  
-> If you use multiple devices, you need to copy and paste the lines containing `serial_device-x` and `device-status-x` and fill them with the corresponding serial-number.
+> Same here: For each device you need a line with `ambientika_device_serial_x` and a line with `ambientika_device_status_x` and fill them with the corresponding serial-number.
 
 
-### 4. Restart Home Assistant
+### 4. Setting up `*master.yaml` and `*slave.yaml`:
+// FIXME
+
+<br>
+
+
+### 5. Restart Home Assistant
 1. Go to "**Developer tools**" first and click on "**CHECK CONFIGURATION**" before restarting!
    - If you have any configuration issues, Home Assistant might restart into "**Recovery Mode**"! You don't want that.
    - If an error is displayed, read the message carefully and follow the instructions!
 2. Then: Click on "**RESTART**" > "**Restart Home Assistant**" (Do not use _Quick Reload_) and proceed with "**OK**".
 
 
-### 5. Check if the package is working
+### 6. Check if the package is working
 Once Home Assistant is restarted, the `automation.ambientika_authenticate` automation will be triggered and obtain the access token automatically. The token will be stored in the `input_text.ambientika_access_token` entity (type: `password`), which by default is excluded from the recorder to protect writing sensitive information into the persistent database. In addition, the token is automatically renewed as soon as the previous token is valid for less than 5 days.
 
 You can check the incoming values in the "**Developer tools**" > "**STATES**" and filter for "**Ambientika**".
@@ -75,12 +88,12 @@ You can check the incoming values in the "**Developer tools**" > "**STATES**" an
   <summary>See more Details</summary>  
 <img src="images/Developer-tools.png" alt="Developer tools / STATES" width=675px/>
 
-> [!NOTE]  
 > The sensors "**Ambientika 1 Humidity (filtered)**" and "**Ambientika 1 Temperature (filtered)**" are producing a `unknown` value, for the first 5-15 minutes. Afterwards they should return smooth values ([see the Documentation for Details](reverse_engineering.md#filter-values)). If not, you might check the `entity_id` for both sensors to ensure that they are connected to the correct raw valued sensor.
 </details>  
 
 
-### 6. Adapt names, if necessary
+<!---
+### 7. Adapt names, if necessary
 The idea here is: I would use numbering for entity names and IDs to reduce the amount of editing. But in the user interface, I would use descriptive terms such as "Ambientika Bedroom" for better understanding and for Voice Assistants. Therefore, only the `friendly_name`/`name`/`alias` section will be adapted in this List:
 - `switch.yaml`:
    - ``friendly_name``: Ambientika 1
@@ -104,7 +117,7 @@ The idea here is: I would use numbering for entity names and IDs to reduce the a
    - ``name``: Ambientika 1 Temperature (filtered)  
 
 
-### 7. Duplicate to "Ambientika 2" if you have multiple Master-devices
+### 8. Duplicate to "Ambientika 2" if you have multiple Master-devices
 > [!NOTE]  
 > The current approach is subject to change. See [#11](https://github.com/Flo-R1der/ambientika-smart_4_home-assistant/issues/11) for details.
 
@@ -124,6 +137,13 @@ This needs to be done for:
 - ``switch.yaml``
 
 Repeat this step, if you have even more Master devices.
+
+
+### 9. Maintenance
+
+some filter reset information.
+
+-->
 
 -----
 
@@ -148,8 +168,6 @@ Please note that the SVG images included in this package are originally from the
 
 
 ## Open Topics
-- The Package is tested with two devices in master-slave logic, but duplicating like described above is pretty inconvenient. Therefore the structure structure should be improved. See [#11](/../../issues/11) for details and status. 
-- I'm receiving values for the Slave by just duplicating the secret `device-status-x`, the corresponding REST-sensor and filter-sensors. Also the "Filter Notification" needs to be extended. However, this is not documented above.
 - I am not able to provide a custom integration. However, others managed to do so. You can find the official Integration on Github: **[ambientika](https://github.com/ambientika) / [HomeAssistant-integration-for-Ambientika](https://github.com/ambientika/HomeAssistant-integration-for-Ambientika)** and on [HACS](https://www.hacs.xyz/).
 - This package and the official integration is depending on the cloud with all advantages and disadvantages. If you like to get a local control of your device, you might check this repository: [sragas / ambientika-local-control](https://github.com/sragas/ambientika-local-control). But the documentation is not on the desired level which makes this a more advanced and sophisticated approach.
 - A [Template-Fan](https://www.home-assistant.io/integrations/fan.template/) may be a thing. But I'm not sure, if this makes any sense with this device.
