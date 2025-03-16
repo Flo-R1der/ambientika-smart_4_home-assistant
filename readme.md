@@ -85,6 +85,8 @@ If you use an operation-mode where sensor values are taken into account (Smart, 
 
 Now you need to set up a configuration files for each device. They are separated based on the device role. 
 
+// FIXME: Explain `CTRL + H` with find + replace, similar to **### 8. Duplicate**
+
 <br>
 
 
@@ -171,15 +173,23 @@ Please note that the SVG images included in this package are originally from the
 
 
 ### Examples  
+The examples from the table below are working for the device ``master_1``. For all other devices you must replace:
+- All ``master_1`` ► ``slave_2`` or whatever renaming you have done in [4. Setting up master and slave](#4-setting-up-masteryaml-and-slaveyaml).  
+
+In the Home Assistant editor the replacing function can be started be pressing `CTRL + F` on your keyboard: <br>
+<img src="images/find_replace-all.png" width=430/>
+
 | Image | YAML-code |
 | ----- | --------- |
 | ![](images/lovelace_example-0.png) | [lovelace.yaml_example-0](lovelace.yaml_example-0) |
-| ![](images/lovelace_example-1.png) | [lovelace.yaml_example-1](lovelace.yaml_example-1) |
-| ![](images/lovelace_example-2.png) | [lovelace.yaml_example-2](lovelace.yaml_example-2) |
-| ![](images/lovelace_example-3.png) | [lovelace.yaml_example-3](lovelace.yaml_example-3) * |
+| ![](images/lovelace_example-1.png) | [lovelace.yaml_example-1](lovelace.yaml_example-1) <sup>(1)</sup> |
+| ![](images/lovelace_example-2.png) | [lovelace.yaml_example-2](lovelace.yaml_example-2) <sup>(1)</sup> |
+| ![](images/lovelace_example-3.png) | [lovelace.yaml_example-3](lovelace.yaml_example-3) <sup>(1,2)</sup> |
 
-\* This approach takes advantage of the [Mushroom Template Card](https://github.com/piitaya/lovelace-mushroom/blob/main/docs/cards/template.md). In order to use it you must install the Mushroom cards first. I would recommend to use [HACS](https://hacs.xyz/) to install them.
+<sup>(1)</sup> To use this card for a slave-device, remove the second part of the vertical stack. It would show failures anyway as there are no control entities for a slave-device.  
+<sup>(2)</sup> This approach takes advantage of the [Mushroom Template Card](https://github.com/piitaya/lovelace-mushroom/blob/main/docs/cards/template.md). In order to use it you must install the Mushroom cards first. I would recommend to use [HACS](https://hacs.xyz/) to install them.
 
+<br>
 
 
 ## Open Topics

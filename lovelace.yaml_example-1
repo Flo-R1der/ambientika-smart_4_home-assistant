@@ -6,9 +6,7 @@ cards:
     cards:
       - type: markdown
         content: >-
-          {%- set OperatingMode = states('sensor.ambientika_1_operating_mode')
-          -%}
-
+          {%- set OperatingMode = states('sensor.ambientika_master_1_operating_mode') -%}
 
           <center>  
             {%- if OperatingMode in ['Smart', 'Auto', 'Night', 'AwayHome', 'ManualHeatRecovery'] -%}
@@ -26,65 +24,65 @@ cards:
             {%- elif OperatingMode in ['Surveillance', 'Off'] -%}
             <img src="/local/ambientika_smart/Casetta_vuota.svg" width=90% />
             {%- endif -%}
-            
+            <br>
             <b> {{ OperatingMode }} </b>
           </center>
       - type: vertical-stack
         cards:
           - type: tile
-            entity: sensor.ambientika_1_temperature_filtered
+            entity: sensor.ambientika_master_1_temperature_filtered
             name: Temperatur
             hide_state: false
             vertical: false
             show_entity_picture: false
           - type: tile
-            entity: sensor.ambientika_1_humidity_filtered
+            entity: sensor.ambientika_master_1_humidity_filtered
             name: Luftfeuchtigkeit
           - type: tile
-            entity: sensor.ambientika_1_filter_status
+            entity: sensor.ambientika_master_1_filter_status
             name: Filterstatus
   - type: entities
     entities:
-      - entity: switch.ambientika_1
+      - entity: switch.ambientika_master_1
         name: Ambientika Kinderzimmer
-      - entity: input_select.ambientika_1_mode
+      - entity: input_select.ambientika_master_1_mode
         name: Modus
       - type: conditional
         conditions:
-          - entity: input_select.ambientika_1_mode
+          - entity: input_select.ambientika_master_1_mode
             state: ManualHeatRecovery
         row:
-          entity: input_number.ambientika_1_fanspeed
+          entity: input_number.ambientika_master_1_fanspeed
           name: Lüfter
       - type: conditional
         conditions:
-          - entity: input_select.ambientika_1_mode
+          - entity: input_select.ambientika_master_1_mode
             state: Auto
         row:
-          entity: input_number.ambientika_1_humiditylevel
+          entity: input_number.ambientika_master_1_humiditylevel
           name: Luftfeuchtigkeit
       - type: conditional
         conditions:
-          - entity: input_select.ambientika_1_mode
+          - entity: input_select.ambientika_master_1_mode
             state: Survillance
         row:
-          entity: input_number.ambientika_1_humiditylevel
+          entity: input_number.ambientika_master_1_humiditylevel
           name: Luftfeuchtigkeit
       - type: conditional
         conditions:
-          - entity: sensor.ambientika_1_light_sensor
+          - entity: sensor.ambientika_master_1_light_sensor
             state_not: NotAvailable
-          - entity: input_select.ambientika_1_mode
+          - entity: input_select.ambientika_master_1_mode
             state: Smart
         row:
-          entity: input_number.ambientika_1_lightlevel
+          entity: input_number.ambientika_master_1_lightlevel
           name: Lichtsensor
       - type: conditional
         conditions:
-          - entity: sensor.ambientika_1_light_sensor
+          - entity: sensor.ambientika_master_1_light_sensor
             state_not: NotAvailable
-          - entity: input_select.ambientika_1_mode
+          - entity: input_select.ambientika_master_1_mode
             state: Auto
         row:
-          entity: input_number.ambientika_1_lightlevel
+          entity: input_number.ambientika_master_1_lightlevel
           name: Lichtsensor
