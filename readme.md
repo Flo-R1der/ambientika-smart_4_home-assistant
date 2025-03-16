@@ -71,23 +71,28 @@ ambientika_device_status_1: https://app.ambientika.eu:4521/device/device-status?
 <details>
 <summary>For details about <b>Master-Slave role and operation</b> open here.</summary> 
 
-Basically there is a single master device, which you can control. For that device you can define the operation mode, fan-speed, humidity target-level and light-level. This device then connects to its assigned slaves and controls their behavior. This means the devices are joining forces in **Push-Pull operations**, where:
-- one or more device blows out used air (exhaust air phase) 
-- one or more opposite device draws in fresh air (supply air phase)
-
-After 60-90 seconds, the devices are changing directions. The master coordinates this change to ensure balanced air circulation. The Ambientika ventilation system also has **ceramic heat exchangers for heat recovery**. During the exhaust air phase, the heat exchanger stores the heat energy, which is then transferred to the incoming fresh air in the subsequent supply air phase.  
-
-If you use an operation-mode where sensor values are taken into account (Smart, Auto, AwayHome and Surveillance) the values from the master are used to do decisions. So it might be useful to set the device in the most challenging environment to be the master.
-
-<img src="images/Master-Slave_explained.svg" alt="Master-Slave map" width=675px/>
+> Basically there is a single master device, which you can control. For that device you can define the operation mode, fan-speed, humidity target-level and light-level. This device then connects to its assigned slaves and controls their behavior. This means the devices are joining forces in **Push-Pull operations**, where:
+> - one or more device blows out used air (exhaust air phase) 
+> - one or more opposite device draws in fresh air (supply air phase)
+> 
+> After 60-90 seconds, the devices are changing directions. The master coordinates this change to ensure balanced air circulation. The Ambientika ventilation system also has **ceramic heat exchangers for heat recovery**. During the exhaust air phase, the heat exchanger stores the heat energy, which is then transferred to the incoming fresh air in the subsequent supply air phase.  
+> 
+> If you use an operation-mode where sensor values are taken into account (Smart, Auto, AwayHome and Surveillance) the values from the master are used to do decisions. So it might be useful to set the device in the most challenging environment to be the master.
+> 
+> <img src="images/Master-Slave_explained.svg" alt="Master-Slave map"/>
 </details> 
-<br>
 
-Now you need to set up a configuration files for each device. They are separated based on the device role. 
+Now you need to set up a configuration files for each device. They are separated based on the device role:
+- **`0_general.yaml`** provides some general mandatory stuff for this package, like the REST-commands, authentication and the filter notification and reset automation. **WARNING**: Never delete this file, it is mandatory!
+- **`1_master.yaml`** provides everything a master device needs like sensors, input entities, switch for turn on/turn off and the change-mode automation.
+- **`2_slave.yaml`** provides only sensors, since slaves can not be controlled as a user.
 
-// FIXME: Explain `CTRL + H` with find + replace, similar to **### 8. Duplicate**
-
-<br>
+**You can use these files out-of-the-box if they fulfill your needs**.
+If not and you have multiple devices that are not covered with the existing yaml files, do this **for each device you want to integrate in your Home Assistant**:
+1. **Duplicate** the master-yaml or slave-yaml and give it a suitable name.
+2. In the copied file **replace all occurrences** of `master_1` or `slave_2` by pressing `CTRL + H` and choose an suitable replacement (Tip: reuse the name+number from the filename)
+3. Add the file to be loaded as package in your `configuration.yaml` (/config) like described in Step 2.
+4. Add the secrets of the device to your `secrets.yaml` (/config/packages/ambientika_smart/) like described in step 3.
 
 
 ### 5. Restart Home Assistant

@@ -1,3 +1,10 @@
+####################################################################################
+#                        !!!    W  A  R  N  I  N  G    !!!                         #
+# This file provides general configuration.                                        #
+# Never delete this file. Otherwise, the package is broken and will stop working!  #
+# Only edit if you know what you're doing.                                         #
+####################################################################################
+
 rest_command:
   ambientika_authenticate:
     url: "https://app.ambientika.eu:4521/users/authenticate"
