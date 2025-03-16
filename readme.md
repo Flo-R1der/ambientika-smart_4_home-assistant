@@ -183,6 +183,11 @@ Please note that the SVG images included in this package are originally from the
 
 
 ## Open Topics
+- Unfortunately the [Ambientika API](https://app.ambientika.eu:4521/swagger/index.html) is acting strange on some things.
+   1. For slave devices: A not actual operation-mode is received from the API. The received value equals to the last set operation-mode when this device was a master (from the device onboarding, since devices will always be onboarded as master).
+   2. The filter reset does not work with other filter conditions rather than "Bad". This disables the possibility to reset the operating hours if you clean it more often. Big dislike, since I used to clean them all in one go and reset the operating hours fol all if possible.
+   3. The filter rest does not work on slave devices. The filter condition on the slave is calculated independent from the master (as all sensor values). And even tho the condition is shown as "Bad", the API call is sent and the answer is 200 (success), the filter remains in "Bad" state.
+   4. When I look at No 3. and 4. it may also be, that the filter reset is broken in general... (Date: 2025-03-16)
 - I am not able to provide a custom integration. However, others managed to do so. You can find the official Integration on Github: **[ambientika](https://github.com/ambientika) / [HomeAssistant-integration-for-Ambientika](https://github.com/ambientika/HomeAssistant-integration-for-Ambientika)** and on [HACS](https://www.hacs.xyz/).
 - This package and the official integration is depending on the cloud with all advantages and disadvantages. If you like to get a local control of your device, you might check this repository: [sragas / ambientika-local-control](https://github.com/sragas/ambientika-local-control). But the documentation is not on the desired level which makes this a more advanced and sophisticated approach.
 - A [Template-Fan](https://www.home-assistant.io/integrations/fan.template/) may be a thing. But I'm not sure, if this makes any sense with this device.
