@@ -68,7 +68,22 @@ ambientika_device_status_1: https://app.ambientika.eu:4521/device/device-status?
 
 
 ### 4. Setting up `*master.yaml` and `*slave.yaml`:
-// FIXME
+<details>
+<summary>For details about <b>Master-Slave role and operation</b> open here.</summary> 
+
+Basically there is a single master device, which you can control. For that device you can define the operation mode, fan-speed, humidity target-level and light-level. This device then connects to its assigned slaves and controls their behavior. This means the devices are joining forces in **Push-Pull operations**, where:
+- one or more device blows out used air (exhaust air phase) 
+- one or more opposite device draws in fresh air (supply air phase)
+
+After 60-90 seconds, the devices are changing directions. The master coordinates this change to ensure balanced air circulation. The Ambientika ventilation system also has **ceramic heat exchangers for heat recovery**. During the exhaust air phase, the heat exchanger stores the heat energy, which is then transferred to the incoming fresh air in the subsequent supply air phase.  
+
+If you use an operation-mode where sensor values are taken into account (Smart, Auto, AwayHome and Surveillance) the values from the master are used to do decisions. So it might be useful to set the device in the most challenging environment to be the master.
+
+<img src="images/Master-Slave_explained.svg" alt="Master-Slave map" width=675px/>
+</details> 
+<br>
+
+Now you need to set up a configuration files for each device. They are separated based on the device role. 
 
 <br>
 
