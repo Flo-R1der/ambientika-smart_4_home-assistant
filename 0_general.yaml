@@ -3,6 +3,7 @@
 # This file provides general configuration.                                        #
 # Never delete this file. Otherwise, the package is broken and will stop working!  #
 # Only edit if you know what you're doing.                                         #
+# Exception: You can add additional filter sensors to the trigger from line 88     #
 ####################################################################################
 
 rest_command:
@@ -80,14 +81,14 @@ automation:
 
 
   - id: automation.ambientika_filter_notification
-    alias: Ambientika Filter Notification
+    alias: Ambientika Filter Notification and Reset 
     description: ""
     mode: single
     trigger:
       - platform: state
         entity_id:
           - sensor.ambientika_master_1_filter_status
-          - sensor.ambientika_2_filter_status
+          - sensor.ambientika_slave_2_filter_status
         to: Bad
         id: bad_filter
       - platform: event

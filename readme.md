@@ -42,11 +42,11 @@ homeassistant:
     ...
 ``````
 > [!WARNING]  
-> Never delete or edit the `ambientika_smart_0:` or `0_general.yaml`. It provides some general mandatory stuff for this package. If deleted, the package will not work!  
+> The `ambientika_smart_0:` or `0_general.yaml` provides some general mandatory stuff for this package. Never delete this, otherwise the package will stop working!
 
 > [!NOTE]  
 > For each device you want to integrate you need a line with `ambientika_smart_x` _(where **x** represents any number)_. 
-> You can rename the *.yaml as you like, but make sure to pick the right one depending on your device role (Master/Slave).
+> Make sure to match your device role (Master/Slave) with the correct master/slave yaml.
 
 
 ### 3. Setting up `secrets.yaml`:
@@ -94,12 +94,15 @@ If not and you have multiple devices that are not covered with the existing yaml
 3. **Register the new file in your `configuration.yaml`** (/config) like described in Step 2. Otherwise it will not be loaded on Home Assistant start.
 4. **Maintain the secrets of the device** to your `secrets.yaml` (/config/packages/ambientika_smart/) like described in step 3. Otherwies
 
+> [!WARNING]  
+> Do not rename the `friendly_name`/`name`/`alias` now, as the entity_id is derived from the display names. Changing the display name now will break some dependencies, so it is important to restart Home Assistant with the package, before changing the display names as described in [7. Adapt names, if necessary](#7-adapt-names-if-necessary)
+
 
 ### 5. Restart Home Assistant
-1. Go to "**Developer tools**" first and click on "**CHECK CONFIGURATION**" before restarting!
+1. Go to "**Developer tools**", Tab "**YAML**" first and click on "**CHECK CONFIGURATION**" before restarting!
    - If you have any configuration issues, Home Assistant might restart into "**Recovery Mode**"! You don't want that.
    - If an error is displayed, read the message carefully and follow the instructions!
-2. Then: Click on "**RESTART**" > "**Restart Home Assistant**" (Do not use _Quick Reload_) and proceed with "**OK**".
+2. Then: Click on "**RESTART**", "**Restart Home Assistant**" (Do not use _Quick Reload_) and proceed with "**OK**".
 
 
 ### 6. Check if the package is working
@@ -117,15 +120,23 @@ You can check the incoming values in the "**Developer tools**" > "**STATES**" an
 ### 7. Adapt names, if necessary
 The idea is: I would use numbering and device role for entity names and IDs to reduce the amount of editing. But in the user interface, I would use descriptive terms such as "Ambientika Bedroom" for better understanding and for Voice Assistants. Therefore, only the `friendly_name`/`name`/`alias` section can be adapted with another mass-replacement:
 - **Replace** all occurrences of `Master-1` or `Slave-2` in the yaml-files by pressing `CTRL + H`, choose a suitable replacement (e.g. Bedroom, Childroom, Bathroom, Kitchen, etc.) and hit **replace all**.
-- Repeat his step for all master and slave yaml-files, but **never edit the `0_general.yaml`!**
+- Repeat his step for all master and slave yaml-files, but **don't edit the `0_general.yaml`** in this step.
 
 
-<!---
-### 9. Maintenance
+### 9. Filter Notification and Reset
+The only maintenance the device needs is to wash the filter from time to time. It seems like there is a internal clock counting the working hours and reporting the filter status as "Good", "Medium" or "Bad". In `0_general.yaml` there is a **[Filter Notification and Reset Automation](0_general.yaml#L82)** that will be triggered, when `sensor.ambientika_master_1_filter_status` or `sensor.ambientika_slave_2_filter_status` are changing their state to "Bad". The automation will then send a **sticky notification** to all mobile devices in Home Assistant:
 
-some filter reset information.
+<img src="images/filter_notification.jpg" width=440/>
 
--->
+When you washed the filter, you _should_ be able to reset the filter working hours by pressing the **Reset Filter** button on your mobile (active connection to your Home Assistant instance mandatory!). the filter-reset will be sent to the control-server and the filter state _should_ switch back to "Good".  
+> But why do I write "_should_ reset" instead of "will reset"? ► Check the [Open Topics](#open-topics); that's why.
+
+#### ToDo:
+If you want to enable the filter notification and filter reset also for other devices rather then master_1 or slave_2, you can do **one of the following**:
+- In the [0_general.yaml on Line 88](0_general.yaml#L88) set up the list of filter status sensors. Then go to "**Developer tools**", Tab "**YAML**" and click on "**CHECK CONFIGURATION**" first. If the check is ok, click on "**AUTOMATIONS**" in the list to reload the automations-config. Double-check the automation for issues.
+- Alternative: Go to the automation editor of "Ambientika Filter Notification" and click on "**MIGRATE**". This will duplicate the automation and you can use the UI editor now to add the filter status sensors to the state trigger. Afterwards you must turn off the yaml-controlled automation from the package!
+
+<br>
 
 -----
 
