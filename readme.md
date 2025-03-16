@@ -18,6 +18,15 @@ If you are interested in the **reverse-engineering process** see the correspondi
 > [!IMPORTANT]  
 > This setup assumes that you have an account registered in the official app and that **your Ambientika Device is already working** via the official App.
 
+
+### TL;DR
+1. Download and extract the package to `/config/packages/ambientika_smart`
+2. Set up the ``packages:`` in your  `configuration.yaml` as well as the secrets in your `secrets.yaml`
+3. Set up `*_master.yaml` and `*_slave.yaml` in the package and restart Home Assistant.
+4. Check if everything is working and adapt the `friendly_name`/`alias`/`name`
+5. Please consider the [Filter Notification and Reset: ToDo](#todo) and the [Open Topics](#open-topics)
+
+
 ### 1. Download and extract the package to the config folder
 Download the repository from GitHub as ZIP-file, extract it and place it in the correct folder:
 `/config/packages/ambientika_smart`
