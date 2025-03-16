@@ -67,7 +67,7 @@ ambientika_device_status_1: https://app.ambientika.eu:4521/device/device-status?
 > Same here: For each device you need a line with `ambientika_device_serial_x` and a line with `ambientika_device_status_x` and fill them with the corresponding serial-number.
 
 
-### 4. Setting up `*master.yaml` and `*slave.yaml`:
+### 4. Setting up `*_master.yaml` and `*_slave.yaml`:
 <details>
 <summary>For details about <b>Master-Slave role and operation</b> open here.</summary> 
 
@@ -90,9 +90,9 @@ Now you need to set up a configuration files for each device. They are separated
 **You can use these files out-of-the-box if they fulfill your needs**.
 If not and you have multiple devices that are not covered with the existing yaml files, do this **for each device you want to integrate in your Home Assistant**:
 1. **Duplicate** the master-yaml or slave-yaml and give it a suitable name.
-2. In the copied file **replace all occurrences** of `master_1` or `slave_2` by pressing `CTRL + H` and choose an suitable replacement (Tip: reuse the name+number from the filename)
-3. Add the file to be loaded as package in your `configuration.yaml` (/config) like described in Step 2.
-4. Add the secrets of the device to your `secrets.yaml` (/config/packages/ambientika_smart/) like described in step 3.
+2. **Replace** all occurrences of `master_1` or `slave_2` in the copied file by pressing `CTRL + H`, choose a suitable replacement (Tip: reuse name+number from the filename) and hit **replace all**.
+3. **Register the new file in your `configuration.yaml`** (/config) like described in Step 2. Otherwise it will not be loaded on Home Assistant start.
+4. **Maintain the secrets of the device** to your `secrets.yaml` (/config/packages/ambientika_smart/) like described in step 3. Otherwies
 
 
 ### 5. Restart Home Assistant
@@ -114,53 +114,13 @@ You can check the incoming values in the "**Developer tools**" > "**STATES**" an
 </details>  
 
 
-<!---
 ### 7. Adapt names, if necessary
-The idea here is: I would use numbering for entity names and IDs to reduce the amount of editing. But in the user interface, I would use descriptive terms such as "Ambientika Bedroom" for better understanding and for Voice Assistants. Therefore, only the `friendly_name`/`name`/`alias` section will be adapted in this List:
-- `switch.yaml`:
-   - ``friendly_name``: Ambientika 1
-- `helpers.yaml`: 
-   - ``name``: Ambientika 1 Fan-Speed
-   - ``name``: Ambientika 1 Humidity-Level
-   - ``name``: Ambientika 1 Mode
-- `automation.yaml`:
-   - ``alias``: Ambientika 1 Change-Mode
-- `sensors.yaml`:
-   - ``name``: Ambientika 1 Current Mode
-   - ``name``: Ambientika 1 lastOperatingMode
-   - ``name``: Ambientika 1 Fan-Speed
-   - ``name``: Ambientika 1 Filter-Status
-   - ``name``: Ambientika 1 Temperature (raw)
-   - ``name``: Ambientika 1 Humidity (raw)
-   - ``name``: Ambientika 1 Air-Quality
-   - ``name``: Ambientika 1 Humidity Alarm
-   - ``name``: Ambientika 1 Night-Alarm
-   - ``name``: Ambientika 1 Humidity (filtered)
-   - ``name``: Ambientika 1 Temperature (filtered)  
+The idea is: I would use numbering and device role for entity names and IDs to reduce the amount of editing. But in the user interface, I would use descriptive terms such as "Ambientika Bedroom" for better understanding and for Voice Assistants. Therefore, only the `friendly_name`/`name`/`alias` section can be adapted with another mass-replacement:
+- **Replace** all occurrences of `Master-1` or `Slave-2` in the yaml-files by pressing `CTRL + H`, choose a suitable replacement (e.g. Bedroom, Childroom, Bathroom, Kitchen, etc.) and hit **replace all**.
+- Repeat his step for all master and slave yaml-files, but **never edit the `0_general.yaml`!**
 
 
-### 8. Duplicate to "Ambientika 2" if you have multiple Master-devices
-> [!NOTE]  
-> The current approach is subject to change. See [#11](https://github.com/Flo-R1der/ambientika-smart_4_home-assistant/issues/11) for details.
-
-In case you have multiple devices set as **Master** you need to copy all the yaml-code assigned with id/name "Ambientika 1" and duplicate it to "Ambientika 2" for example. On Windows machines you might use `CTRL + H` to start the mass replacement and:
-- find: ``_1`` (most entities) / ``-1`` (secrets) *
-- replace: ``_2`` / ``-2``
-
-> [!WARNING]  
-> \* don't use only `1` in the "find" field as it will also change values for fan speed or port-number for the REST-API which will break your package!
-
-This needs to be done for:
-- ``automation.yaml`` (here, a `variables:`-section is already implemented for simplification )
-- ``customize.yaml``
-- ``helpers.yaml``
-- ``secrets.yaml``
-- ``sensors.yaml``
-- ``switch.yaml``
-
-Repeat this step, if you have even more Master devices.
-
-
+<!---
 ### 9. Maintenance
 
 some filter reset information.
