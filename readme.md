@@ -117,7 +117,7 @@ If not and you have multiple devices that are not covered with the existing yaml
 ### 6. Check if the package is working
 Once Home Assistant is restarted, the `automation.ambientika_authenticate` automation will be triggered and obtain the access token automatically. The token will be stored in the `input_text.ambientika_access_token` entity (type: `password`), which by default is excluded from the recorder to protect writing sensitive information into the persistent database. In addition, the token is automatically renewed as soon as the previous token is valid for less than 5 days.
 
-You can check the incoming values in the "**Developer tools**" > "**STATES**" and filter for "**Ambientika**".
+You can check the incoming values in the "**Developer tools**", Tab "**STATES**" and filter for "**Ambientika**".
 <details>
   <summary>See more Details</summary>  
 <img src="images/Developer-tools.png" alt="Developer tools / STATES" width=675px/>
@@ -133,14 +133,14 @@ The idea is: I would use numbering and device role for entity names and IDs to r
 
 
 ### 9. Filter Notification and Reset
-The only maintenance the device needs is to wash the filter from time to time. It seems like there is a internal clock counting the working hours and reporting the filter status as "Good", "Medium" or "Bad". In `0_general.yaml` there is a **[Filter Notification and Reset Automation](0_general.yaml#L82)** that will be triggered, when `sensor.ambientika_master_1_filter_status` or `sensor.ambientika_slave_2_filter_status` are changing their state to "Bad". The automation will then send a **sticky notification** to all mobile devices in Home Assistant:
+The only maintenance the device needs is to wash the filter from time to time. It seems like there is a internal clock counting the working hours and reporting the filter status as "Good", "Medium" or "Bad". In `0_general.yaml` there is a **[Filter Notification and Reset Automation](0_general.yaml#L83)** that will be triggered, when `sensor.ambientika_master_1_filter_status` or `sensor.ambientika_slave_2_filter_status` are changing their state to "Bad". The automation will then send a **sticky notification** to all mobile devices in Home Assistant:
 
 <img src="images/filter_notification.jpg" width=440/>
 
 When you washed the filter, you _should_ be able to reset the filter working hours by pressing the **Reset Filter** button on your mobile (active connection to your Home Assistant instance mandatory!). the filter-reset will be sent to the control-server and the filter state _should_ switch back to "Good".  
 > But why do I write "_should_ reset" instead of "will reset"? ► Check the [Open Topics](#open-topics); that's why.
 
-#### ToDo:
+#### ToDo
 If you want to enable the filter notification and filter reset also for other devices rather then master_1 or slave_2, you can do **one of the following**:
 - In the [0_general.yaml on Line 88](0_general.yaml#L88) set up the list of filter status sensors. Then go to "**Developer tools**", Tab "**YAML**" and click on "**CHECK CONFIGURATION**" first. If the check is ok, click on "**AUTOMATIONS**" in the list to reload the automations-config. Double-check the automation for issues.
 - Alternative: Go to the automation editor of "Ambientika Filter Notification" and click on "**MIGRATE**". This will duplicate the automation and you can use the UI editor now to add the filter status sensors to the state trigger. Afterwards you must turn off the yaml-controlled automation from the package!
@@ -159,7 +159,7 @@ Please note that the SVG images included in this package are originally from the
 
 ### Examples  
 The examples from the table below are working for the device ``master_1``. For all other devices you must replace:
-- All ``master_1`` ► ``slave_2`` or whatever renaming you have done in [4. Setting up master and slave](#4-setting-up-masteryaml-and-slaveyaml).  
+- All ``master_1`` → ``slave_2`` or whatever renaming you have done in [4. Setting up master and slave](#4-setting-up-_masteryaml-and-_slaveyaml).  
 
 In the Home Assistant editor the replacing function can be started be pressing `CTRL + F` on your keyboard: <br>
 <img src="images/find_replace-all.png" width=430/>

@@ -216,12 +216,12 @@ automation:
                 {% else %} {{ states(input_operatingmode) }}
                 {% endif %}
               fanspeed: >-
-                {{ states(input_fanspeed)|int - Master-1 }}
+                {{ states(input_fanspeed)|int - 1 }}
               humiditylevel: >-
-                {{ states(input_humiditylevel)|int - Master-1 }}
+                {{ states(input_humiditylevel)|int - 1 }}
               lightlevel: >-
                 {% if is_state(sensor_lightsensor, 'NotAvailable') %} 0
-                {% else %} {{ states(input_lightlevel)|int + Master-1 }}
+                {% else %} {{ states(input_lightlevel)|int + 1 }}
                 {% endif %}
           - action: rest_command.ambientika_change_mode
             data:
