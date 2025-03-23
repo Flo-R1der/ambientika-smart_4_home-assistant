@@ -100,8 +100,9 @@ Now you need to set up a configuration files for each device. They are separated
 If not and you have multiple devices that are not covered with the existing yaml files, do this **for each device you want to integrate in your Home Assistant**:
 1. **Duplicate** the master-yaml or slave-yaml and give it a suitable name.
 2. **Replace** all occurrences of `master_1` or `slave_2` in the copied file by pressing `CTRL + H`, choose a suitable replacement (Tip: reuse name+number from the filename) and hit **replace all**.
-3. **Register the new file in your `configuration.yaml`** (/config) like described in Step 2. Otherwise it will not be loaded on Home Assistant start.
-4. **Maintain the secrets of the device** to your `secrets.yaml` (/config/packages/ambientika_smart/) like described in step 3. Otherwies
+3. **For Slave Devices only**: go to the `homeassistant:` `customize:` section of your `*_slave.yaml` and fill in the entity_id of the `related_master` device. This ensures a proper Operating Mode display. (Details in #24)
+4. **Register the new file in your `configuration.yaml`** (/config) like described in Step 2. Otherwise it will not be loaded on Home Assistant start.
+5. **Maintain the secrets of the device** to your `secrets.yaml` (/config/packages/ambientika_smart/) like described in step 3. Otherwise the sensors will stay on 'unavailable' or 'unknown'.
 
 > [!WARNING]  
 > Do not rename the `friendly_name`/`name`/`alias` now, as the entity_id is derived from the display names. Changing the display name now will break some dependencies, so it is important to restart Home Assistant with the package, before changing the display names as described in [7. Adapt names, if necessary](#7-adapt-names-if-necessary)
@@ -178,8 +179,8 @@ In the Home Assistant editor the replacing function can be started be pressing `
 
 
 ## Open Topics
-- Unfortunately the [Ambientika API](https://app.ambientika.eu:4521/swagger/index.html) is acting strange on some things.
-   1. For slave devices: A not actual operation-mode is received from the API. The received value equals to the last set operation-mode when this device was a master (from the device onboarding, since devices will always be onboarded as master).
+- Unfortunately the [Ambientika API](https://app.ambientika.eu:4521/swagger/index.html) is acting strange on some things:
+   1. For slave devices: A not actual operation-mode is received from the API. The received value equals to the last set operation-mode when this device was a master (from the device onboarding, since devices will always be onboarded as master). Patch provided with #24, but I'm still not happy solving the problem on the endpoint.
    2. The filter reset does not work with other filter conditions rather than "Bad". This disables the possibility to reset the operating hours if you clean it more often. Big dislike, since I used to clean them all in one go and reset the operating hours fol all if possible.
    3. The filter rest does not work on slave devices. The filter condition on the slave is calculated independent from the master (as all sensor values). And even tho the condition is shown as "Bad", the API call is sent and the answer is 200 (success), the filter remains in "Bad" state.
    4. When I look at No 3. and 4. it may also be, that the filter reset is broken in general... (Date: 2025-03-16)

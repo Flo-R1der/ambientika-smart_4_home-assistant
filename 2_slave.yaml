@@ -5,30 +5,6 @@ rest:
       Authorization: >
         Bearer {{ states("input_text.ambientika_access_token") }}
     sensor:
-      - unique_id: ambientika_slave_2_operatingMode
-        value_template: "{{ value_json.operatingMode | is_defined }}"
-        name: Ambientika Slave-2 Operating Mode
-        icon: mdi:leaf-circle-outline
-      - unique_id: ambientika_slave_2_lastOperatingMode
-        value_template: "{{ value_json.lastOperatingMode | is_defined }}"
-        name: Ambientika Slave-2 lastOperatingMode
-      - unique_id: ambientika_slave_2_fanSpeed
-        value_template: "{{ value_json.fanSpeed | is_defined }}"
-        # this is the defined fan speed for Mode: "ManualHeatRecovery"
-        name: Ambientika Slave-2 Fan-Speed
-        icon: >-
-          {% if states('sensor.ambientika_slave_2_fan_speed') == 'Low' %}
-          mdi:fan-speed-1
-          {% elif states('sensor.ambientika_slave_2_fan_speed') == 'Medium' %}
-          mdi:fan-speed-2
-          {% elif states('sensor.ambientika_slave_2_fan_speed') == 'High' %}
-          mdi:fan-speed-3
-          {% else %} mdi:fan-alert {% endif %}
-      - unique_id: ambientika_slave_2_humidityLevel
-        value_template: "{{ value_json.humidityLevel | is_defined }}"
-        # this is the defined humidityLevel for Mode: "Auto" and "Surveillance"
-        name: Ambientika Slave-2 Humidity-Level
-        icon: mdi:water
       - unique_id: ambientika_slave_2_filtersStatus
         value_template: "{{ value_json.filtersStatus | is_defined }}"
         name: Ambientika Slave-2 Filter-Status
@@ -60,10 +36,6 @@ rest:
           {% elif states('sensor.ambientika_slave_2_device_role') == 'SlaveOppositeMaster' %}
           mdi:link-box-variant
           {% else %} mdi:help-box {% endif %}
-      - unique_id: ambientika_slave_2_lightSensorLevel
-        value_template: "{{ value_json.lightSensorLevel | is_defined }}"
-        name: Ambientika Slave-2 Light-Sensor
-        icon: mdi:theme-light-dark
       - unique_id: ambientika_slave_2_signalStrenght
         value_template: "{{ value_json.signalStrenght | is_defined }}"
         name: Ambientika Slave-2 Signal
@@ -82,11 +54,26 @@ rest:
 
 homeassistant:
   customize:
+    sensor.ambientika_slave_2_operating_mode:
+      related_master: 'sensor.ambientika_master_1_operating_mode'
     sensor.ambientika_slave_2_filter_status:
       device_serial: !secret ambientika_device_serial_2
       # This is used for the filter reset automation.
       # Unfortunately, the filter reset does not work at all on slave devices, 
       # even tho is should work imho. Hopefully this will be supported in the future!
+
+
+# receive the operating mode from the related master device,
+# since the API provides outdated values.
+template:
+  - sensor:
+    - unique_id: ambientika_slave_2_operatingMode
+      state: >-
+        {% set master = state_attr('sensor.ambientika_slave_2_operating_mode', 'related_master') %}
+        {% if master != null %} {{ states(master) }}
+        {% else %} unknown {% endif %}
+      name: Ambientika Slave-2 Operating Mode
+      icon: mdi:leaf-circle-outline
 
 
 sensor:
