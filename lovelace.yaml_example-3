@@ -9,7 +9,7 @@ cards:
         cards:
           - type: custom:mushroom-template-card
             entity: sensor.ambientika_master_1_temperature_filtered
-            primary: '{{ states(entity) }} °C'
+            primary: "{{ states(entity) }} °C"
             icon: mdi:thermometer
             icon_color: >-
               {% if states(entity) in ['unknown', 'unavailable'] %} grey {% else
@@ -20,9 +20,9 @@ cards:
               {% endif %}
             tap_action:
               action: more-info
-            secondary: '{{ state_attr(entity, ''friendly_name'').split('' '')[2] }}'
+            secondary: "{{ state_attr(entity, 'friendly_name').split(' ')[2] }}"
           - type: custom:mushroom-template-card
-            primary: '{{ states(entity) }} %'
+            primary: "{{ states(entity) }} %"
             icon: mdi:water-percent
             icon_color: >-
               {% if states(entity) in ['unknown', 'unavailable'] %} grey {% else
@@ -33,9 +33,9 @@ cards:
             tap_action:
               action: more-info
             entity: sensor.ambientika_master_1_humidity_filtered
-            secondary: '{{ state_attr(entity, ''friendly_name'').split('' '')[2] }}'
+            secondary: "{{ state_attr(entity, 'friendly_name').split(' ')[2] }}"
           - type: custom:mushroom-template-card
-            primary: '{{ states(entity) }}'
+            primary: "{{ states(entity) }}"
             icon: mdi:air-filter
             icon_color: >-
               {% if states(entity) in ['unknown', 'unavailable'] %} grey {% else
@@ -48,9 +48,9 @@ cards:
             tap_action:
               action: more-info
             entity: sensor.ambientika_master_1_filter_status
-            secondary: '{{ state_attr(entity, ''friendly_name'').split('' '')[2] }}'
+            secondary: "{{ state_attr(entity, 'friendly_name').split(' ')[2] }}"
           - type: custom:mushroom-template-card
-            primary: '{{ states(entity) }}'
+            primary: "{{ states(entity) }}"
             icon: mdi:molecule-co2
             icon_color: >-
               {% if states(entity) in ['unknown', 'unavailable'] %} grey {% else
@@ -64,9 +64,9 @@ cards:
             tap_action:
               action: more-info
             entity: sensor.ambientika_master_1_air_quality
-            badge_color: ''
-            badge_icon: ''
-            secondary: '{{ state_attr(entity, ''friendly_name'').split('' '')[2] }}'
+            badge_color: ""
+            badge_icon: ""
+            secondary: "{{ state_attr(entity, 'friendly_name').split(' ')[2] }}"
       - type: markdown
         content: |-
           <center> <font color=#676766>  
@@ -88,15 +88,18 @@ cards:
             {%- elif OperatingMode in ['Surveillance', 'Off'] -%}
             <img src="/local/ambientika_smart/Casetta_vuota.svg" width=90% />
             {%- endif -%}
-            
-            {%- set fan_speed = states('sensor.ambientika_master_1_fan_speed') -%}
-            {%- set fan_speed_icon = state_attr('sensor.ambientika_master_1_fan_speed', 'icon') -%}
-            {%- set humid_level = states('sensor.ambientika_master_1_humidity_level') -%}
-            {%- set humid_level_icon = state_attr('sensor.ambientika_master_1_humidity_level', 'icon') -%}
-            {%- if OperatingMode in ['Auto', 'Surveillance'] -%}
-            Ziel: <ha-icon icon='{{humid_level_icon}}'></ha-icon> {{humid_level}}
-            {%- elif OperatingMode in ['ManualHeatRecovery'] -%}
-            <ha-icon icon='{{fan_speed_icon}}'></ha-icon> {{fan_speed}}
+
+            {%- set role = states('sensor.ambientika_master_1_device_role') -%}
+            {%- if role == "Master" -%}
+              {%- set fan_speed = states('sensor.ambientika_master_1_fan_speed') -%}
+              {%- set fan_speed_icon = state_attr('sensor.ambientika_master_1_fan_speed', 'icon') -%}
+              {%- set humid_level = states('sensor.ambientika_master_1_humidity_level') -%}
+              {%- set humid_level_icon = state_attr('sensor.ambientika_master_1_humidity_level', 'icon') -%}
+              {%- if OperatingMode in ['Auto', 'Surveillance'] -%}
+              Ziel: <ha-icon icon='{{humid_level_icon}}'></ha-icon> {{humid_level}}
+              {%- elif OperatingMode in ['ManualHeatRecovery'] -%}
+              <ha-icon icon='{{fan_speed_icon}}'></ha-icon> {{fan_speed}}
+              {%- endif -%}
             {%- endif -%}
           </center> </font>
   - type: entities

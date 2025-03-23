@@ -27,15 +27,18 @@ cards:
                 {%- elif OperatingMode in ['Surveillance', 'Off'] -%}
                 <img src="/local/ambientika_smart/Casetta_vuota.svg" width=90% />
                 {%- endif -%}
-                
-                {%- set fan_speed = states('sensor.ambientika_master_1_fan_speed') -%}
-                {%- set fan_speed_icon = state_attr('sensor.ambientika_master_1_fan_speed', 'icon') -%}
-                {%- set humid_level = states('sensor.ambientika_master_1_humidity_level') -%}
-                {%- set humid_level_icon = state_attr('sensor.ambientika_master_1_humidity_level', 'icon') -%}
-                {%- if OperatingMode in ['Auto', 'Surveillance'] -%}
-                Ziel: <ha-icon icon='{{humid_level_icon}}'></ha-icon> {{humid_level}}
-                {%- elif OperatingMode in ['ManualHeatRecovery'] -%}
-                <ha-icon icon='{{fan_speed_icon}}'></ha-icon> {{fan_speed}}
+
+                {%- set role = states('sensor.ambientika_master_1_device_role') -%}
+                {%- if role == "Master" -%}
+                  {%- set fan_speed = states('sensor.ambientika_master_1_fan_speed') -%}
+                  {%- set fan_speed_icon = state_attr('sensor.ambientika_master_1_fan_speed', 'icon') -%}
+                  {%- set humid_level = states('sensor.ambientika_master_1_humidity_level') -%}
+                  {%- set humid_level_icon = state_attr('sensor.ambientika_master_1_humidity_level', 'icon') -%}
+                  {%- if OperatingMode in ['Auto', 'Surveillance'] -%}
+                  Ziel: <ha-icon icon='{{humid_level_icon}}'></ha-icon> {{humid_level}}
+                  {%- elif OperatingMode in ['ManualHeatRecovery'] -%}
+                  <ha-icon icon='{{fan_speed_icon}}'></ha-icon> {{fan_speed}}
+                  {%- endif -%}
                 {%- endif -%}
               </center> </font>
       - type: vertical-stack
