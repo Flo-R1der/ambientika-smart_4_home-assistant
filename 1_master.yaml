@@ -1,0 +1,291 @@
+rest:
+  # here, MULTIPLE sensors are set up using the same REST-endpoint
+  - resource: !secret ambientika_device_status_1
+    headers:
+      Authorization: >
+        Bearer {{ states("input_text.ambientika_access_token") }}
+    sensor:
+      - unique_id: ambientika_master_1_operatingMode
+        value_template: "{{ value_json.operatingMode | is_defined }}"
+        name: Ambientika Master-1 Operating Mode
+        icon: mdi:leaf-circle-outline
+      - unique_id: ambientika_master_1_lastOperatingMode
+        value_template: "{{ value_json.lastOperatingMode | is_defined }}"
+        name: Ambientika Master-1 lastOperatingMode
+      - unique_id: ambientika_master_1_fanSpeed
+        value_template: "{{ value_json.fanSpeed | is_defined }}"
+        # this is the defined fan speed for Mode: "ManualHeatRecovery"
+        name: Ambientika Master-1 Fan-Speed
+        icon: >-
+          {% if states('sensor.ambientika_master_1_fan_speed') == 'Low' %}
+          mdi:fan-speed-1
+          {% elif states('sensor.ambientika_master_1_fan_speed') == 'Medium' %}
+          mdi:fan-speed-2
+          {% elif states('sensor.ambientika_master_1_fan_speed') == 'High' %}
+          mdi:fan-speed-3
+          {% else %} mdi:fan-alert {% endif %}
+      - unique_id: ambientika_master_1_humidityLevel
+        value_template: "{{ value_json.humidityLevel | is_defined }}"
+        # this is the defined humidityLevel for Mode: "Auto" and "Surveillance"
+        name: Ambientika Master-1 Humidity-Level
+        icon: mdi:water
+      - unique_id: ambientika_master_1_filtersStatus
+        value_template: "{{ value_json.filtersStatus | is_defined }}"
+        name: Ambientika Master-1 Filter-Status
+        icon: mdi:air-filter
+      - unique_id: ambientika_master_1_temperature
+        value_template: "{{ float(value_json.temperature, default='unavailable') }}"
+        name: Ambientika Master-1 Temperature (raw)
+        icon: mdi:thermometer
+        device_class: temperature
+        unit_of_measurement: "°C"
+      - unique_id: ambientika_master_1_humidity
+        value_template: "{{ float(value_json.humidity, default='unavailable') }}"
+        name: Ambientika Master-1 Humidity (raw)
+        icon: mdi:water-percent
+        device_class: humidity
+        unit_of_measurement: "%"
+      - unique_id: ambientika_master_1_airQuality
+        value_template: "{{ value_json.airQuality | is_defined }}"
+        name: Ambientika Master-1 Air-Quality
+        icon: mdi:molecule-co2
+      - unique_id: ambientika_master_1_deviceRole
+        value_template: "{{ value_json.deviceRole | is_defined }}"
+        name: Ambientika Master-1 Device-Role
+        icon: >-
+          {% if states('sensor.ambientika_master_1_device_role') == 'Master' %}
+          mdi:star-box
+          {% elif states('sensor.ambientika_master_1_device_role') == 'SlaveEqualMaster' %}
+          mdi:link-box-variant
+          {% elif states('sensor.ambientika_master_1_device_role') == 'SlaveOppositeMaster' %}
+          mdi:link-box-variant
+          {% else %} mdi:help-box {% endif %}
+      - unique_id: ambientika_master_1_lightSensorLevel
+        value_template: "{{ value_json.lightSensorLevel | is_defined }}"
+        name: Ambientika Master-1 Light-Sensor
+        icon: mdi:theme-light-dark
+      - unique_id: ambientika_master_1_signalStrenght
+        value_template: "{{ value_json.signalStrenght | is_defined }}"
+        name: Ambientika Master-1 Signal
+        icon: mdi:wifi
+        unit_of_measurement: "lqi"
+    binary_sensor:
+      - unique_id: ambientika_master_1_humidityAlarm
+        value_template: "{{ value_json.humidityAlarm | is_defined }}"
+        name: Ambientika Master-1 Humidity-Alarm
+        icon: mdi:water-percent-alert
+      - unique_id: ambientika_master_1_nightAlarm
+        value_template: "{{ value_json.nightAlarm | is_defined }}"
+        name: Ambientika Master-1 Night-Alarm
+        icon: mdi:water-percent-alert
+
+
+input_number:
+  ambientika_master_1_fanspeed:
+    name: Ambientika Master-1 Fan-Speed
+    min: 1
+    max: 3
+    step: 1
+    icon: mdi:fan
+  ambientika_master_1_humiditylevel:
+    name: Ambientika Master-1 Humidity-Level
+    min: 1
+    max: 3
+    step: 1
+    icon: mdi:water
+  ambientika_master_1_lightlevel:
+    name: Ambientika Master-1 Light-Level
+    min: 0
+    max: 2
+    step: 1
+    icon: mdi:theme-light-dark
+
+
+input_select:
+  ambientika_master_1_mode:
+    name: Ambientika Master-1 Mode-Selection
+    options:
+      - Smart
+      - Auto
+      - ManualHeatRecovery
+      - Night
+      - AwayHome
+      - Surveillance
+      - TimedExpulsion
+      - Expulsion
+      - Intake
+      - MasterSlaveFlow
+      - SlaveMasterFlow
+    icon: mdi:form-select
+
+
+automation:
+  - id: automation.ambientika_master_1_change_mode
+    alias: Ambientika Master-1 Change-Mode
+    description: ""
+    mode: single
+    variables:
+      input_operatingmode: input_select.ambientika_master_1_mode
+      input_fanspeed: input_number.ambientika_master_1_fanspeed
+      input_humiditylevel: input_number.ambientika_master_1_humiditylevel
+      input_lightlevel: input_number.ambientika_master_1_lightlevel
+      sensor_operatingmode: sensor.ambientika_master_1_operating_mode
+      sensor_fanspeed: sensor.ambientika_master_1_fan_speed
+      sensor_humiditylevel: sensor.ambientika_master_1_humidity_level
+      sensor_lightsensor: sensor.ambientika_master_1_light_sensor
+    trigger:
+      - platform: state
+        entity_id:
+          - input_select.ambientika_master_1_mode
+          - input_number.ambientika_master_1_fanspeed
+          - input_number.ambientika_master_1_humiditylevel
+          - input_number.ambientika_master_1_lightlevel
+        id: change_mode
+      - platform: state
+        entity_id:
+          - sensor.ambientika_master_1_operating_mode
+          - sensor.ambientika_master_1_fan_speed
+          - sensor.ambientika_master_1_humidity_level
+          - sensor.ambientika_master_1_light_sensor
+        id: mode_changed
+    condition:
+      - condition: template
+        value_template: >-
+          {{ now() > as_datetime(this.attributes.last_triggered, today_at("00:00")) + timedelta(seconds=2) }}
+    action:
+      - if:
+          - condition: trigger
+            id:
+              - mode_changed
+        then:
+          - condition: template
+            alias: Check if any sensor is in 'unavailable' or 'unknown'
+            value_template: >-
+              {{ states(sensor_operatingmode) not in ['unavailable', 'unknown'] and
+              states(sensor_fanspeed) not in ['unavailable', 'unknown'] and
+              states(sensor_humiditylevel) not in ['unavailable', 'unknown'] and
+              states(sensor_lightsensor) not in ['unavailable', 'unknown'] }}
+          - variables:
+              fanspeed: >-
+                {% if states(sensor_fanspeed) == 'Low' %} 1
+                {% elif states(sensor_fanspeed) == 'Medium' %} 2
+                {% elif states(sensor_fanspeed) == 'High' %} 3
+                {% else %} {{ states(input_fanspeed) }}
+                {% endif %}
+              humiditylevel: >-
+                {% if states(sensor_humiditylevel) == 'Dry' %} 1
+                {% elif states(sensor_humiditylevel) == 'Normal' %} 2
+                {% elif states(sensor_humiditylevel) == 'Moist' %} 3
+                {% else %} {{ states(input_humiditylevel) }}
+                {% endif %}
+              lightsensorlevel: >-
+                {% if states(sensor_lightsensor) == 'NotAvailable' %} 0
+                {% elif states(sensor_lightsensor) == 'Off' %} 0
+                {% elif states(sensor_lightsensor) == 'Low' %} 1
+                {% elif states(sensor_lightsensor) == 'Medium' %} 2
+                {% else %} {{ states(input_lightlevel) }}
+                {% endif %}
+          - action: input_number.set_value
+            target:
+              entity_id: "{{ input_fanspeed }}"
+            data:
+              value: "{{ fanspeed|float }}"
+          - action: input_number.set_value
+            target:
+              entity_id: "{{ input_humiditylevel }}"
+            data:
+              value: "{{ humiditylevel|float }}"
+          - action: input_number.set_value
+            target:
+              entity_id: "{{ input_lightlevel }}"
+            data:
+              value: "{{ lightsensorlevel|float }}"
+          - condition: template
+            alias: Check if "Operating-Mode" is 'Off'
+            value_template: "{{ states(sensor_operatingmode) != 'Off' }}"
+          - action: input_select.select_option
+            target:
+              entity_id: "{{ input_operatingmode }}"
+            data:
+              option: "{{ states(sensor_operatingmode) }}"
+        else:
+          - variables:
+              operatingmode: >-
+                {## if trigger.to_state is not defined, assuming switch as trigger ##}
+                {% if trigger.to_state is not defined and is_state('switch.ambientika_master_1', 'on') %} Off
+                {% else %} {{ states(input_operatingmode) }}
+                {% endif %}
+              fanspeed: >-
+                {{ states(input_fanspeed)|int - 1 }}
+              humiditylevel: >-
+                {{ states(input_humiditylevel)|int - 1 }}
+              lightlevel: >-
+                {% if is_state(sensor_lightsensor, 'NotAvailable') %} 0
+                {% else %} {{ states(input_lightlevel)|int + 1 }}
+                {% endif %}
+          - action: rest_command.ambientika_change_mode
+            data:
+              serial: !secret ambientika_device_serial_1
+              mode: "\"{{ operatingmode }}\""
+              fan: "{{ fanspeed }}"
+              humidity: "{{ humiditylevel }}"
+              light: "{{ lightlevel }}"
+          - delay:
+              hours: 0
+              minutes: 0
+              seconds: 3
+              milliseconds: 0
+          - action: homeassistant.update_entity
+            target:
+              entity_id: "{{ sensor_operatingmode }}"
+
+
+switch:
+- platform: template
+  switches:
+    ambientika_master_1:
+      friendly_name: Ambientika Master-1
+      unique_id: ambientika_master_1
+      icon_template: >
+        {% if is_state('sensor.ambientika_master_1_operating_mode', 'Off') %} mdi:hvac-off
+        {% else %} mdi:hvac {% endif %}
+      value_template: "{{ not is_state('sensor.ambientika_master_1_operating_mode', 'Off') }}"
+      turn_on:
+        - action: automation.trigger
+          target:
+            entity_id: automation.ambientika_master_1_change_mode
+      turn_off:
+        - action: automation.trigger
+          target:
+            entity_id: automation.ambientika_master_1_change_mode
+
+
+homeassistant:
+  customize:
+    automation.ambientika_master_1_change_mode:
+      icon: mdi:hvac
+    sensor.ambientika_master_1_filter_status:
+      device_serial: !secret ambientika_device_serial_1
+      # This is used for the filter reset automation.
+
+
+sensor:
+  - platform: filter
+    unique_id: ambientika_master_1_humidity_filtered
+    name: Ambientika Master-1 Humidity (filtered)
+    entity_id: sensor.ambientika_master_1_humidity_raw
+    filters:
+      - filter: time_simple_moving_average
+        window_size: "00:09"
+        precision: 0
+      - filter: lowpass
+        time_constant: 3
+        precision: 0
+  - platform: filter
+    unique_id: ambientika_master_1_temperature_filtered
+    name: Ambientika Master-1 Temperature (filtered)
+    entity_id: sensor.ambientika_master_1_temperature_raw
+    filters:
+      - filter: time_simple_moving_average
+        window_size: "00:05"
+        precision: 1
