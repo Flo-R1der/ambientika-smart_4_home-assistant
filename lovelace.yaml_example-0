@@ -3,17 +3,17 @@ type: picture-glance
 image: >-
   https://www.ambientika.eu/thumbnail/98/7c/f6/1669100540/wandpanel_1920x1920.jpg
 aspect_ratio: 60%
-entity: sensor.ambientika_1_operating_mode
+entity: sensor.ambientika_master_1_operating_mode
 entities:
-  - entity: sensor.ambientika_1_operating_mode
+  - entity: sensor.ambientika_master_1_operating_mode
     show_state: true
-  - entity: sensor.ambientika_1_temperature_filtered
+  - entity: sensor.ambientika_master_1_temperature_filtered
     show_state: true
-  - entity: sensor.ambientika_1_humidity_filtered
+  - entity: sensor.ambientika_master_1_humidity_filtered
     show_state: true
-  - entity: sensor.ambientika_1_air_quality
+  - entity: sensor.ambientika_master_1_air_quality
     show_state: true
-  - entity: sensor.ambientika_1_light_sensor
+  - entity: sensor.ambientika_master_1_light_sensor
     show_state: true
-  - entity: sensor.ambientika_1_filter_status
+  - entity: sensor.ambientika_master_1_filter_status
     show_state: true

@@ -113,7 +113,7 @@ Essentially, the process involved testing and YAML work, using the [Swagger UI](
 ## Filter values
 
 Unfortunately the numerical Values from the sensors had a lot of jitter, so I tried to find a suitable [filter](https://www.home-assistant.io/integrations/filter/) for these sensors. This involved a lot of trial and error, waiting for values to be generated, and comparing the different tests:  
-<img src="images/filter_humidity__lowpass_vs_time-simple-moving-average_2.png" alt="Filter comparison: Lowpass vs. Time Simple Moving Average" width="600px"/>
+<img src="images/sensor-filter_humidity__lowpass_vs_time-simple-moving-average_2.png" alt="Filter comparison: Lowpass vs. Time Simple Moving Average" width="600px"/>
 <br>
 
 As can be seen in the picture above: 
@@ -121,7 +121,7 @@ As can be seen in the picture above:
 - The **Lowpass**-Filter (purple and cyan) on the other hand, make the graph smooth, but with unacceptable deviation from the original entity.
 
 So, both were combined to create smooth values:  
-<img src="images/filter_result.gif" alt="Filter result" width="434px"/>
+<img src="images/sensor-filter_result.gif" alt="Filter result" width="434px"/>
 <br>
 > _**Note**: Don't get confused with these high values. I made the settings, filters and screenshots when the wall was freshly plastered. Therefore, the device was measuring a lot of moisture from the wall. The values reduced to a normal level after a couple of weeks._
 
