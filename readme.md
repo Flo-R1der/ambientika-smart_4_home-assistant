@@ -18,6 +18,9 @@ If you are interested in the **reverse-engineering process** see the correspondi
 > [!IMPORTANT]  
 > This setup assumes that you have an account registered in the official app and that **your Ambientika Device is already working** via the official App.
 
+> [!CAUTION]  
+> There are **breaking changes** in v0.2.0 you must care of, when performing an update. This warning can be ignored, if you haven't used a previous version. Details see [changelog](CHANGELOG.md).
+
 
 ### TL;DR
 1. Download and extract the package to `/config/packages/ambientika_smart`
