@@ -241,23 +241,23 @@ automation:
 
 
 switch:
-- platform: template
-  switches:
-    ambientika_master_1:
-      friendly_name: Ambientika Master-1
-      unique_id: ambientika_master_1
-      icon_template: >
-        {% if is_state('sensor.ambientika_master_1_operating_mode', 'Off') %} mdi:hvac-off
-        {% else %} mdi:hvac {% endif %}
-      value_template: "{{ not is_state('sensor.ambientika_master_1_operating_mode', 'Off') }}"
-      turn_on:
-        - action: automation.trigger
-          target:
-            entity_id: automation.ambientika_master_1_change_mode
-      turn_off:
-        - action: automation.trigger
-          target:
-            entity_id: automation.ambientika_master_1_change_mode
+  - platform: template
+    switches:
+      ambientika_master_1:
+        friendly_name: Ambientika Master-1
+        unique_id: ambientika_master_1
+        icon_template: >
+          {% if is_state('sensor.ambientika_master_1_operating_mode', 'Off') %} mdi:hvac-off
+          {% else %} mdi:hvac {% endif %}
+        value_template: "{{ not is_state('sensor.ambientika_master_1_operating_mode', 'Off') }}"
+        turn_on:
+          - action: automation.trigger
+            target:
+              entity_id: automation.ambientika_master_1_change_mode
+        turn_off:
+          - action: automation.trigger
+            target:
+              entity_id: automation.ambientika_master_1_change_mode
 
 
 homeassistant:
