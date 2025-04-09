@@ -19,14 +19,14 @@ If you are interested in the **reverse-engineering process** see the correspondi
 > This setup assumes that you have an account registered in the official app and that **your Ambientika Device is already working** via the official App.
 
 > [!CAUTION]  
-> There are **breaking changes** in v0.2.0 you must care of, when performing an update. This warning can be ignored, if you haven't used a previous version. Details see [changelog](CHANGELOG.md).
+> **There are breaking changes in v0.2.0 that you need to be aware of when updating. You can ignore this warning if you haven't used a previous version. Details see [changelog](CHANGELOG.md).**
 
 
 ### TL;DR
 1. Download and extract the package to `/config/packages/ambientika_smart`
-2. Set up the ``packages:`` in your  `configuration.yaml` as well as the secrets in your `secrets.yaml`
+2. Configure ``packages:`` in your  `configuration.yaml` and define the required secrets in your `secrets.yaml`
 3. Set up `*_master.yaml` and `*_slave.yaml` in the package and restart Home Assistant.
-4. Check if everything is working and adapt the `friendly_name`/`alias`/`name`
+4. Verify that everything works and adjust `friendly_name`/`alias`/`name` as needed.
 5. Please consider the [Filter Notification and Reset: ToDo](#todo) and the [Open Topics](#open-topics)
 
 
@@ -44,7 +44,7 @@ Download the repository from GitHub as ZIP-file, extract it and place it in the 
 
 
 ### 2. Setting up `configuration.yaml`: 
-Add the `homeassistant:`, `package:` and `ambientika_smart:` lines to your configuration.yaml as shown in my example here:
+Add the `homeassistant:`, `package:` and `ambientika_smart:` lines to your `configuration.yaml` as shown in my example here:
 ``````
 homeassistant:
   packages:
@@ -54,11 +54,11 @@ homeassistant:
     ...
 ``````
 > [!WARNING]  
-> The `ambientika_smart_0:` or `0_general.yaml` provides some general mandatory stuff for this package. Never delete this, otherwise the package will stop working!
+> **The `ambientika_smart_0:` or `0_general.yaml` file contains essential components required for this package to function. Do not delete it, or the package will stop working!**
 
 > [!NOTE]  
-> For each device you want to integrate you need a line with `ambientika_smart_x` _(where **x** represents any number)_. 
-> Make sure to match your device role (Master/Slave) with the correct master/slave yaml.
+> For each device you want to integrate, add a line with `ambientika_smart_x` _(where **x** is any number)_. 
+> Ensure that the device role (Master/Slave) matches the corresponding ``*_master.yaml`` or ``*_slave.yaml`` file.
 
 
 ### 3. Setting up `secrets.yaml`:
@@ -81,35 +81,38 @@ ambientika_device_status_1: https://app.ambientika.eu:4521/device/device-status?
 
 ### 4. Setting up `*_master.yaml` and `*_slave.yaml`:
 <details>
-<summary>For details about <b>Master-Slave role and operation</b> open here.</summary> 
+<summary>Click here for details about <b>Master-Slave roles and operation</b>.</summary> 
 
-> Basically there is a single master device, which you can control. For that device you can define the operation mode, fan-speed, humidity target-level and light-level. This device then connects to its assigned slaves and controls their behavior. This means the devices are joining forces in **Push-Pull operations**, where:
-> - one or more device blows out used air (exhaust air phase) 
-> - one or more opposite device draws in fresh air (supply air phase)
+> Typically, there's a single master device that you can control. For this device, you can define the operation mode, fan speed, target humidity level, and light level.
+The master connects to its assigned slaves and controls their behavior. Together, they operate in **push-pull mode**, meaning:
+> - One or more devices expel used air (exhaust phase)
+> - One or more opposite devices draw in fresh air (supply phase)
 > 
-> After 60-90 seconds, the devices are changing directions. The master coordinates this change to ensure balanced air circulation. The Ambientika ventilation system also has **ceramic heat exchangers for heat recovery**. During the exhaust air phase, the heat exchanger stores the heat energy, which is then transferred to the incoming fresh air in the subsequent supply air phase.  
+> Every 60–90 seconds, the devices switch direction. The master coordinates this to ensure balanced air circulation.
+The Ambientika ventilation system also features **ceramic heat exchangers for heat recovery**. During the exhaust phase, heat is stored in the exchanger and then transferred to the fresh air during the supply phase.
 > 
-> If you use an operation-mode where sensor values are taken into account (Smart, Auto, AwayHome and Surveillance) the values from the master are used to do decisions. So it might be useful to set the device in the most challenging environment to be the master.
+> If you're using an operation mode that considers sensor values (e.g. Smart, Auto, AwayHome, or Surveillance), the master device’s values are used for decision-making. It’s often best to choose the device in the most demanding environment as the master.
 > 
 > <img src="images/Master-Slave_explained.svg" alt="Master-Slave map"/>
 </details> 
 
-Now you need to set up a configuration files for each device. They are separated based on the device role:
-- **`0_general.yaml`** provides some general mandatory stuff for this package, like the REST-commands, authentication and the filter notification and reset automation. **WARNING**: Never delete this file, it is mandatory!
-- **`1_master.yaml`** provides everything a master device needs like sensors, input entities, switch for turn on/turn off and the change-mode automation.
-- **`2_slave.yaml`** provides only sensors, since slaves can not be controlled as a user.
+Now you need to set up a configuration file for each device, depending on its role:
+- **`0_general.yaml`** contains essential definitions such as REST commands, authentication, and filter notification/reset automation. **WARNING**: Do not delete this file — it is mandatory! 
+- **`1_master.yaml`** includes everything required for a master device: sensors, input entities, on/off switch, and automation for mode changes.
+- **`2_slave.yaml`** includes only sensors, as slave devices cannot be directly controlled by the user.
 
-**You can use these files out-of-the-box if they fulfill your needs**.
-If not and you have multiple devices that are not covered with the existing yaml files, do this **for each device you want to integrate in your Home Assistant**:
-1. **Add the secrets of the device** to your `secrets.yaml` (/config/packages/ambientika_smart/) like described in step 3. Otherwise the sensors will stay on 'unavailable' or 'unknown'.
-2. **Duplicate** the master-yaml or slave-yaml and give it a suitable name.
-3. **Replace** all occurrences of `master_1` or `slave_2` in the copied file by pressing `CTRL + H`, choose a suitable replacement (Tip: reuse name+number from the filename) and hit **replace all**.
-4. **Fill in the secrets** by searching for `!secrets` and **replace all occurrences** of `ambientika_device_serial_x` and `ambientika_device_status_x` with the one from the secrets.yaml.
-5. **For Slave Devices only**: go to the `homeassistant:` `customize:` section of your `*_slave.yaml` and fill in the entity_id of the `related_master` device. This ensures a proper Operating Mode display. (Details in #24)
-6. **Register the new file in your `configuration.yaml`** (/config) like described in Step 2. Otherwise it will not be loaded on Home Assistant start.
+**You can use these files as-is if they meet your needs**.
+If not and you have multiple devices that are not covered with the existing files, follow these steps **for each device you want to integrate in your Home Assistant**:
+1. **Add the device's secrets** to your `secrets.yaml` (/config/packages/ambientika_smart/) as described in step 3. Without this, sensors will remain 'unavailable' or 'unknown'.
+2. **Duplicate** the master or slave YAML file and give it an appropriate name.
+3. **Replace all occurrences** of `master_1` or `slave_2` in the copied file (e.g. with `CTRL + H`). Use a matching name and number based on your new filename.
+4. **Update the secrets** by replacing all `!secrets: ambientika_device_serial_x` and `!secrets: ambientika_device_status_x` with the corresponding entries from your ``secrets.yaml``.
+5. **For slave devices only**: In the `homeassistant: customize:` section of your `*_slave.yaml` set the `related_master` entity_id to ensure proper display of the operating mode. (See issue #24 for more info.)
+6. **Register the new file** in your `configuration.yaml` (/config) as described in Step 2. Without this, the file won’t load at startup.
 
 > [!WARNING]  
-> Do not rename the `friendly_name`/`name`/`alias` now, as the entity_id is derived from the display names. Changing the display name now will break some dependencies, so it is important to restart Home Assistant with the package, before changing the display names as described in [7. Adapt names, if necessary](#7-adapt-names-if-necessary)
+> Do not rename the `friendly_name`/`name`/`alias` at this stage. These values define the entity_id. Changing them now can break dependencies.  
+> Wait until after the initial restart of Home Assistant with this package, and follow the instructions in [7. Adapt names, if necessary](#7-adapt-names-if-necessary)
 
 
 ### 5. Restart Home Assistant
@@ -132,23 +135,31 @@ You can check the incoming values in the "**Developer tools**", Tab "**STATES**"
 
 
 ### 7. Adapt names, if necessary
-The idea is: I would use numbering and device role for entity names and IDs to reduce the amount of editing. But in the user interface, I would use descriptive terms such as "Ambientika Bedroom" for better understanding and for Voice Assistants. Therefore, only the `friendly_name`/`name`/`alias` section can be adapted with another mass-replacement:
-- **Replace** all occurrences of `Master-1` or `Slave-2` in the yaml-files by pressing `CTRL + H`, choose a suitable replacement (e.g. Bedroom, Childroom, Bathroom, Kitchen, etc.) and hit **replace all**.
-- Repeat his step for all master and slave yaml-files, but **don't edit the `0_general.yaml`** in this step.
+> [!WARNING]  
+> Do not rename the `friendly_name`/`name`/`alias` before the initial restart of Home Assistant with this package!
+
+The idea is to use numbered names and device roles (e.g. ``Master-1``, ``Slave-2``) for entity names and IDs to keep editing minimal. However, in the user interface, it's better to use descriptive names like “Ambientika Bedroom” — especially for clarity and voice assistant integration.
+To update display names only (without breaking internal references), you can adjust the `friendly_name`/`name`/`alias` fields using a mass-replace:
+- **Replace** all occurrences of `Master-1` or `Slave-2` in the YAML files by pressing `CTRL + H`, choose a meaningful name (e.g. Bedroom, Childroom, Bathroom, Kitchen, etc.) and select **replace all**.
+- Repeat his step for all master and slave YAML files - but **do not edit the `0_general.yaml`** at this point!
 
 
 ### 9. Filter Notification and Reset
-The only maintenance the device needs is to wash the filter from time to time. It seems like there is a internal clock counting the working hours and reporting the filter status as "Good", "Medium" or "Bad". In `0_general.yaml` there is a **[Filter Notification and Reset Automation](0_general.yaml#L83)** that will be triggered, when `sensor.ambientika_master_1_filter_status` or `sensor.ambientika_slave_2_filter_status` are changing their state to "Bad". The automation will then send a **sticky notification** to all mobile devices in Home Assistant:
+The only maintenance required for the device is to clean the filter from time to time. Internally, the device appears to track operating hours and reports the filter status as "Good", "Medium" or "Bad".  
+In `0_general.yaml` there's a **[Filter Notification and Reset Automation](0_general.yaml#L83)** that triggers when either `sensor.ambientika_master_1_filter_status` or `sensor.ambientika_slave_2_filter_status` changes to "Bad". This automation sends a **sticky notification** to all mobile devices connected to Home Assistant:
 
 <img src="images/filter_notification.jpg" width=440/>
 
-When you washed the filter, you _should_ be able to reset the filter working hours by pressing the **Reset Filter** button on your mobile (active connection to your Home Assistant instance mandatory!). the filter-reset will be sent to the control-server and the filter state _should_ switch back to "Good".  
-> But why do I write "_should_ reset" instead of "will reset"? ► Check the [Open Topics](#open-topics); that's why.
+Once you've cleaned the filter, you should be able to reset the operating hours by pressing the **Reset Filter** button on your mobile device (requires an active connection to your Home Assistant instance). The reset command is sent to the control server, and the filter status _should_ switch back to "Good".  
+> But why do I write "_should_ reset" instead of "will reset"? ► See [Open Topics](#open-topics); that's why.
 
 #### ToDo
-If you want to enable the filter notification and filter reset also for other devices rather then master_1 or slave_2, you can do **one of the following**:
-- In the [0_general.yaml on Line 88](0_general.yaml#L88) set up the list of filter status sensors. Then go to "**Developer tools**", Tab "**YAML**" and click on "**CHECK CONFIGURATION**" first. If the check is ok, click on "**AUTOMATIONS**" in the list to reload the automations-config. Double-check the automation for issues.
-- Alternative: Go to the automation editor of "Ambientika Filter Notification" and click on "**MIGRATE**". This will duplicate the automation and you can use the UI editor now to add the filter status sensors to the state trigger. Afterwards you must turn off the yaml-controlled automation from the package!
+If you want to enable filter notifications and reset functionality for other devices (not just ``master_1`` or ``slave_2``), you have **two options**:
+- In the [0_general.yaml on Line 88](0_general.yaml#L88) update the list of **filter status sensors**.  
+  Then go to **Developer tools** → **YAML** tab, and click **CHECK CONFIGURATION**. If everything is fine, click on **AUTOMATIONS** to reload the automations. Double-check the automation afterward.
+- Alternatively, open the automation editor for **Ambientika Filter Notification** and click on **MIGRATE**.  
+  This creates a UI-editable copy of the automation. Add the desired filter status sensors to the state trigger.  
+  ⚠️ Afterwards, make sure to **disable the original YAML-based automation** from the package!
 
 <br>
 
