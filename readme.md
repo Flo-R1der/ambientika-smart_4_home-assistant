@@ -101,11 +101,12 @@ Now you need to set up a configuration files for each device. They are separated
 
 **You can use these files out-of-the-box if they fulfill your needs**.
 If not and you have multiple devices that are not covered with the existing yaml files, do this **for each device you want to integrate in your Home Assistant**:
-1. **Duplicate** the master-yaml or slave-yaml and give it a suitable name.
-2. **Replace** all occurrences of `master_1` or `slave_2` in the copied file by pressing `CTRL + H`, choose a suitable replacement (Tip: reuse name+number from the filename) and hit **replace all**.
-3. **For Slave Devices only**: go to the `homeassistant:` `customize:` section of your `*_slave.yaml` and fill in the entity_id of the `related_master` device. This ensures a proper Operating Mode display. (Details in #24)
-4. **Register the new file in your `configuration.yaml`** (/config) like described in Step 2. Otherwise it will not be loaded on Home Assistant start.
-5. **Maintain the secrets of the device** to your `secrets.yaml` (/config/packages/ambientika_smart/) like described in step 3. Otherwise the sensors will stay on 'unavailable' or 'unknown'.
+1. **Add the secrets of the device** to your `secrets.yaml` (/config/packages/ambientika_smart/) like described in step 3. Otherwise the sensors will stay on 'unavailable' or 'unknown'.
+2. **Duplicate** the master-yaml or slave-yaml and give it a suitable name.
+3. **Replace** all occurrences of `master_1` or `slave_2` in the copied file by pressing `CTRL + H`, choose a suitable replacement (Tip: reuse name+number from the filename) and hit **replace all**.
+4. **Fill in the secrets** by searching for `!secrets` and **replace all occurrences** of `ambientika_device_serial_x` and `ambientika_device_status_x` with the one from the secrets.yaml.
+5. **For Slave Devices only**: go to the `homeassistant:` `customize:` section of your `*_slave.yaml` and fill in the entity_id of the `related_master` device. This ensures a proper Operating Mode display. (Details in #24)
+6. **Register the new file in your `configuration.yaml`** (/config) like described in Step 2. Otherwise it will not be loaded on Home Assistant start.
 
 > [!WARNING]  
 > Do not rename the `friendly_name`/`name`/`alias` now, as the entity_id is derived from the display names. Changing the display name now will break some dependencies, so it is important to restart Home Assistant with the package, before changing the display names as described in [7. Adapt names, if necessary](#7-adapt-names-if-necessary)
