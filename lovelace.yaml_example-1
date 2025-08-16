@@ -86,3 +86,9 @@ cards:
         row:
           entity: input_number.ambientika_master_1_lightlevel
           name: Lichtsensor
+      - type: conditional
+        conditions:
+          - entity: sensor.ambientika_master_1_filter_status
+            state_not: Good
+        row:
+          entity: script.filter_reset_master_1

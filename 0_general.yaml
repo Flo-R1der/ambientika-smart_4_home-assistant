@@ -88,7 +88,6 @@ automation:
       - platform: state
         entity_id:
           - sensor.ambientika_master_1_filter_status
-          - sensor.ambientika_slave_2_filter_status
         to: Bad
         id: bad_filter
       - platform: event

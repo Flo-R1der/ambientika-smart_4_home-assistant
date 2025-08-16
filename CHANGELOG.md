@@ -4,7 +4,20 @@ All notable changes to this project will be documented in this file.
 You can also take a look into the [Milestones](https://github.com/Flo-R1der/ambientika-smart_4_home-assistant/milestones?state=closed) as I'm doing the detailed documentation there.
 
 
-## [v0.2.0](/../../milestone/2?closed=1) - 2025-04-09
+## [v0.2.1](/../../compare/v0.2.0...v0.2.1) - 2025-08-16
+### Added
+- Script for filter reset added to master devices (2248a46)
+
+### Improvements
+- UI examples updated to show the filter reset button too (1d02162)
+
+### Fix
+- remove slave device from filter notification automation (see comment in #28) to prevent filter notifications, while the filter cant be reset (8e552b7)
+
+<br>
+
+
+## [v0.2.0](/../../compare/v0.1.2...v0.2.0) - 2025-04-09
 
 - Reorganized the YAML structure: files are now split into "general" and "per-device" sections, making duplication for additional devices easier and well-documented.
 - Added documentation (text and image) explaining how master and slave devices work together.
