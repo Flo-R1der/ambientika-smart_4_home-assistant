@@ -289,3 +289,37 @@ sensor:
       - filter: time_simple_moving_average
         window_size: "00:05"
         precision: 1
+
+script:
+  filter_reset_master_1:
+    alias: Ambientika Master-1 Filter-Reset
+    mode: single
+    icon: mdi:air-filter
+    sequence:
+      - variables:
+          device_serial: !secret ambientika_device_serial_1
+      - action: rest_command.ambientika_reset_filter
+        metadata: {}
+        data:
+          rest_url: >-
+            {{ 'https://app.ambientika.eu:4521/device/reset-filter' ~
+            '?deviceSerialNumber=' ~ device_serial }}
+        response_variable: result
+      - if:
+          - condition: template
+            value_template: "{{ result.status == 200 }}"
+        then:
+          - action: notify.notify
+            metadata: {}
+            data:
+              message: clear_notification
+              data:
+                tag: sensor.ambientika_master_1_filter_status
+        else:
+          - action: notify.notify
+            metadata: {}
+            data:
+              title: ⚠️ Ambientika Filter-Reset failed
+              message: >-
+                Automatic filter reset failed. Please use the official app to reset
+                the filter status.
