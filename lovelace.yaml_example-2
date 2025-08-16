@@ -27,7 +27,7 @@ cards:
                 {%- elif OperatingMode in ['Surveillance', 'Off'] -%}
                 <img src="/local/ambientika_smart/Casetta_vuota.svg" width=90% />
                 {%- endif -%}
-
+                
                 {%- set role = states('sensor.ambientika_master_1_device_role') -%}
                 {%- if role == "Master" -%}
                   {%- set fan_speed = states('sensor.ambientika_master_1_fan_speed') -%}
@@ -35,9 +35,9 @@ cards:
                   {%- set humid_level = states('sensor.ambientika_master_1_humidity_level') -%}
                   {%- set humid_level_icon = state_attr('sensor.ambientika_master_1_humidity_level', 'icon') -%}
                   {%- if OperatingMode in ['Auto', 'Surveillance'] -%}
-                  Ziel: <ha-icon icon='{{humid_level_icon}}'></ha-icon> {{humid_level}}
+                    Ziel: <ha-icon icon='{{humid_level_icon}}'></ha-icon> {{humid_level}}
                   {%- elif OperatingMode in ['ManualHeatRecovery'] -%}
-                  <ha-icon icon='{{fan_speed_icon}}'></ha-icon> {{fan_speed}}
+                    <ha-icon icon='{{fan_speed_icon}}'></ha-icon> {{fan_speed}}
                   {%- endif -%}
                 {%- endif -%}
               </center> </font>
@@ -98,3 +98,9 @@ cards:
         row:
           entity: input_number.ambientika_master_1_lightlevel
           name: Lichtsensor
+      - type: conditional
+        conditions:
+          - entity: sensor.ambientika_master_1_filter_status
+            state_not: Good
+        row:
+          entity: script.filter_reset_master_1
