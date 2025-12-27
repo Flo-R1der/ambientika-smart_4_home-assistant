@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 You can also take a look into the [Milestones](https://github.com/Flo-R1der/ambientika-smart_4_home-assistant/milestones?state=closed) as I'm doing the detailed documentation there.
 
 
+## [v0.2.2](/../../compare/v0.2.1...v0.2.2) - 2025-12-27
+### Fix
+- Legacy template migration ([Details](https://community.home-assistant.io/t/deprecation-of-legacy-template-entities-in-2025-12/955562))
+
+<br>
+
+
 ## [v0.2.1](/../../compare/v0.2.0...v0.2.1) - 2025-08-16
 ### Added
 - Script for filter reset added to master devices (2248a46)
